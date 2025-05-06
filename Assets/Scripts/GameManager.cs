@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -67,14 +67,19 @@ public class GameManager : MonoBehaviour
                     optionsMenu.SetActive(false);
                     exitMenu.SetActive(false);
 
-                    if (player != null && player.GetComponent<PlayerControls>().getDead())
+                    if (player != null && !playerAlive)
                         deathMenu.SetActive(true);
-
 
                     Time.timeScale = 1;
                 }
             }
-
         }
     }
+
+    public void LoadNextScene(int index)
+    {
+        SceneManager.UnloadSceneAsync(index);
+        SceneManager.LoadSceneAsync(index + 1);
+    }
+
 }
