@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Dizzy4_0: -4272108751827496366
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
