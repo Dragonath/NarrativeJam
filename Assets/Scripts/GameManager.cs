@@ -4,6 +4,9 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager instance; // Singleton instance of GameManager
+    public GameObject player;
+    public bool playerAlive;
+    public bool playerInput;
 
 
     void Awake()
