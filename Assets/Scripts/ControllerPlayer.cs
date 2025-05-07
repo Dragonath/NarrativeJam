@@ -54,6 +54,8 @@ public class PlayerControls : MonoBehaviour
         jumpsLeft = maxJumps;
 
         SetControl(true);
+
+
     }
 
 
