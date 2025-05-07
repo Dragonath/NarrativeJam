@@ -219,14 +219,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 737603429454696439, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: m_Padding.m_Top
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 737603429454696439, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: m_Padding.m_Bottom
-      value: 800
-      objectReference: {fileID: 0}
     - target: {fileID: 1913781174164931996, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -269,14 +261,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2339641804979602177, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3713281670562673203, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: m_UiScaleMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3713281670562673203, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: m_MatchWidthOrHeight
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

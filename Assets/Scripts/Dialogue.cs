@@ -29,6 +29,8 @@ public class Dialogue : MonoBehaviour
     public static event Action<Story> OnCreateStory;
 
     InputAction interactAction;
+    float inputCD = 0.5f;
+    bool inputReady = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,8 +47,10 @@ public class Dialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (interactAction.IsPressed())
+        if (interactAction.IsPressed() && inputReady)
         {
+            inputReady = false;
+            StartCoroutine(InputCooldown());
             if (!isTyping)
             {
                 PlayStory();
@@ -56,6 +60,12 @@ public class Dialogue : MonoBehaviour
                 skip = true;
             }
         }
+    }
+
+    IEnumerator InputCooldown()
+    {
+        yield return new WaitForSeconds(inputCD);
+        inputReady = true;
     }
 
     void StartStory()
