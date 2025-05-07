@@ -1,5 +1,8 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using static UnityEngine.Timeline.DirectorControlPlayable;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +21,11 @@ public class GameManager : MonoBehaviour
     public GameObject exitMenu;
     public GameObject deathMenu;
 
+    CanvasGroup deathCanvas; // Reference to the CanvasGroup component for fading effects
+    public CanvasGroup pauseCanvas;
+    public bool pauseActive = false;
 
+    InputAction menuAction;
 
     void Awake()
     {
@@ -38,7 +45,10 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        deathCanvas = deathMenu.GetComponent<CanvasGroup>(); // Get the CanvasGroup component from the death menu
+        deathCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
+        pauseCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
+        menuAction = InputSystem.actions.FindAction("Menu"); // Find the menu action from the Input System
     }
 
     // Update is called once per frame
@@ -46,40 +56,90 @@ public class GameManager : MonoBehaviour
     {
         if (playerInput || !playerAlive)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (menuAction.IsPressed() && !pauseActive)
             {
                 if (!paused)
                 {
-                    //SoundManager.PlaySound("MENUHOVER");
-                    paused = true;
-
-                    if (deathMenu.activeSelf)
-                        deathMenu.SetActive(false);
-
-                    pauseMenu.SetActive(true);
-                    Time.timeScale = 0;
+                    pauseActive = true;
+                    pauseMenu.SetActive(true); // Activate the pause menu
+                    StartCoroutine(FadeMenuIn()); // Start fading in the pause menu
                 }
                 else
                 {
-                    //SoundManager.PlaySound("MENUSELECT");
-                    paused = false;
-                    pauseMenu.SetActive(false);
-                    optionsMenu.SetActive(false);
-                    exitMenu.SetActive(false);
-
-                    if (player != null && !playerAlive)
-                        deathMenu.SetActive(true);
-
+                    pauseActive = true;
                     Time.timeScale = 1;
+                    StartCoroutine(FadeMenuOut());
                 }
             }
         }
+    }
+
+    IEnumerator FadeMenuIn()
+    {
+        SoundManager.PlaySound("menuHover");
+        paused = true;
+
+        if (deathMenu.activeSelf)
+            deathMenu.SetActive(false);
+
+        while (pauseCanvas.alpha < 1)
+        {
+            pauseCanvas.alpha += Time.deltaTime;
+            yield return null;
+        }
+        pauseCanvas.interactable = true;
+        yield return null;
+
+        pauseActive = false;
+        Time.timeScale = 0;
+    }
+
+    IEnumerator FadeMenuOut()
+    {
+        while (pauseCanvas.alpha > 0)
+        {
+            pauseCanvas.alpha -= Time.deltaTime;
+            yield return null;
+        }
+        pauseCanvas.interactable = false;
+        yield return null;
+
+        //SoundManager.PlaySound("menuSelect");
+        paused = false;
+        pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        exitMenu.SetActive(false);
+
+        if (player != null && !playerAlive)
+            deathMenu.SetActive(true);
+
+        pauseActive = false;
     }
 
     public void LoadNextScene(int index)
     {
         SceneManager.UnloadSceneAsync(index);
         SceneManager.LoadSceneAsync(index + 1);
+    }
+
+    public void Fade()
+    {
+        pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        exitMenu.SetActive(false);
+        deathMenu.SetActive(true);
+        StartCoroutine(FadeIn());
+    }
+
+    IEnumerator FadeIn()
+    {
+        while (deathCanvas.alpha < 1)
+        {
+            deathCanvas.alpha += Time.deltaTime;
+            yield return null;
+        }
+        deathCanvas.interactable = true;
+        yield return null;
     }
 
 }
