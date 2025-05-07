@@ -38,6 +38,7 @@ public class SoundManager : MonoBehaviour
         buttonClick = Resources.Load<AudioClip>("ButtonClick");
         jump = Resources.Load<AudioClip>("Jump");
         // Set initial volume levels from PlayerPrefs
+        audioMixer.SetFloat("Master", Mathf.Log10(PlayerPrefs.GetFloat("Master")) * 20);
         audioMixer.SetFloat("Sound", Mathf.Log10(PlayerPrefs.GetFloat("Sound")) * 20);
         audioMixer.SetFloat("Music", Mathf.Log10(PlayerPrefs.GetFloat("Music")) * 20);
     }
@@ -76,6 +77,9 @@ public class SoundManager : MonoBehaviour
                 break;
             case "jump":
                 audioSrc.PlayOneShot(jump);
+                break;
+            default:
+                Debug.LogWarning("Sound not found: " + clip);
                 break;
         }
     }

@@ -7,13 +7,21 @@ using UnityEngine;
 class PlayerData
 {
     public int currentLevelIndex;
+    public bool dashUnlocked;
+    public bool runUnlocked;
+    public bool jumpUnlocked;
+    public bool walkUnlocked;
 }
 
 public class SaveAndLoad : MonoBehaviour
 {
     public static SaveAndLoad saveAndLoad;
 
-    public int currentLevelIndex;  
+    public int currentLevelIndex;
+    public bool dashUnlocked;
+    public bool runUnlocked;
+    public bool jumpUnlocked;
+    public bool walkUnlocked;
 
     void Awake()
     {
@@ -44,6 +52,10 @@ public class SaveAndLoad : MonoBehaviour
 
         // Save the current level index
         data.currentLevelIndex = currentLevelIndex;
+        data.dashUnlocked = dashUnlocked;
+        data.jumpUnlocked = jumpUnlocked;
+        data.runUnlocked = runUnlocked;
+        data.walkUnlocked = walkUnlocked;
 
         bf.Serialize(file, data);
         file.Close();
