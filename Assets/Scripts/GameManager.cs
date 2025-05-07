@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     CanvasGroup deathCanvas; // Reference to the CanvasGroup component for fading effects
     public CanvasGroup pauseCanvas;
     public bool pauseActive = false;
+    public CanvasGroup sceneTransition;
 
     InputAction menuAction;
 
@@ -49,6 +50,13 @@ public class GameManager : MonoBehaviour
         deathCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
         pauseCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
         menuAction = InputSystem.actions.FindAction("Menu"); // Find the menu action from the Input System
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        StartCoroutine(SceneFadeOut());
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        StartCoroutine(SceneFadeOut());
     }
 
     // Update is called once per frame
@@ -118,6 +126,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadNextScene(int index)
     {
+        StartCoroutine(SceneFadeIn());
         SceneManager.UnloadSceneAsync(index);
         SceneManager.LoadSceneAsync(index + 1);
     }
@@ -140,6 +149,24 @@ public class GameManager : MonoBehaviour
         }
         deathCanvas.interactable = true;
         yield return null;
+    }
+
+    IEnumerator SceneFadeIn()
+    {
+        while (sceneTransition.alpha < 1)
+        {
+            sceneTransition.alpha += Time.deltaTime * 2;
+            yield return null;
+        }
+    }
+
+    IEnumerator SceneFadeOut()
+    {
+        while(sceneTransition.alpha > 0)
+        {
+            sceneTransition.alpha -= Time.deltaTime * 2;
+            yield return null;
+        }
     }
 
 }

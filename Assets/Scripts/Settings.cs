@@ -82,4 +82,12 @@ public class Settings : MonoBehaviour
     {
         soundManager.SetVolume(mixer.FindMatchingGroups("Music")[0], sliderValue);
     }
+    
+    public void SaveSettings()
+    {
+        PlayerPrefs.SetFloat("Master", masterSlider.value);
+        PlayerPrefs.SetFloat("Sound", soundSlider.value);
+        PlayerPrefs.SetFloat("Music", musicSlider.value);
+        PlayerPrefs.Save();
+    }
 }
