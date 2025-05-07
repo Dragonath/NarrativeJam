@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// OLD ONE - REMOVE LATER 
 
 public class PlayerControls : MonoBehaviour
 {
