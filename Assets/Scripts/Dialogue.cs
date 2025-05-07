@@ -1,0 +1,156 @@
+using UnityEditor.Rendering;
+using UnityEngine;
+using System.Collections;   
+using TMPro;
+using Ink.Runtime;
+using UnityEngine.UI;
+using System;
+using UnityEngine.InputSystem;
+
+public class Dialogue : MonoBehaviour
+{
+    public bool isTyping;
+    public bool skip;
+    public TMP_Text dialogue;
+    public TMP_Text diaName;
+    public float typingSpeed = 0.05f;
+
+    [SerializeField]
+    private TextAsset inkJSONAsset = null;
+    public Story story;
+
+    [SerializeField]
+    private Canvas canvas = null;
+    [SerializeField]
+    private Canvas buttonCanvas = null;
+    [SerializeField]
+    private Button buttonPrefab = null;
+
+    public static event Action<Story> OnCreateStory;
+
+    InputAction interactAction;
+    float inputCD = 0.5f;
+    bool inputReady = true;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    void Awake()
+    {
+        StartStory();
+        interactAction = InputSystem.actions.FindAction("Interact");
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (interactAction.IsPressed() && inputReady)
+        {
+            inputReady = false;
+            StartCoroutine(InputCooldown());
+            if (!isTyping)
+            {
+                PlayStory();
+            }
+            else if (isTyping)
+            {
+                skip = true;
+            }
+        }
+    }
+
+    IEnumerator InputCooldown()
+    {
+        yield return new WaitForSeconds(inputCD);
+        inputReady = true;
+    }
+
+    void StartStory()
+    {
+        DeleteButtons();
+        story = new Story(inkJSONAsset.text);
+        if (OnCreateStory != null) OnCreateStory(story);
+        PlayStory();
+    }
+
+    void PlayStory()
+    {
+        DeleteButtons();
+
+        if(story.canContinue)
+        {
+            // Continue gets the next line of the story
+            string text = story.Continue();
+            // This removes any white space from the text.
+            text = text.Trim();
+            // Display the text on screen!
+            StartCoroutine(TypeLine(text));
+        }
+        if (story.currentChoices.Count > 0)
+        {
+            for (int i = 0; i < story.currentChoices.Count; ++i)
+            {
+                Choice choice = story.currentChoices[i];
+                Button button = CreateChoiceView(choice.text.Trim());
+                // Tell the button what to do when we press it
+                button.onClick.AddListener(delegate {
+                    OnClickChoiceButton(choice);
+                });
+            }
+        }
+    }
+
+    void OnClickChoiceButton(Choice choice)
+    {
+        story.ChooseChoiceIndex(choice.index);
+        PlayStory();
+    }
+
+    Button CreateChoiceView(string text)
+    {
+        // Creates the button from a prefab
+        Button choice = Instantiate(buttonPrefab) as Button;
+        choice.transform.SetParent(buttonCanvas.transform, false);
+
+        // Gets the text from the button prefab
+        TMP_Text choiceText = choice.GetComponentInChildren<TMP_Text>();
+        choiceText.text = text;
+
+        // Make the button expand to fit the text
+        HorizontalLayoutGroup layoutGroup = choice.GetComponent<HorizontalLayoutGroup>();
+        layoutGroup.childForceExpandHeight = false;
+
+        return choice;
+    }
+
+    void DeleteButtons()
+    {
+        int childCount = buttonCanvas.transform.childCount;
+        for (int i = childCount - 1; i >= 0; --i)
+        {
+            Destroy(buttonCanvas.transform.GetChild(i).gameObject);
+        }
+    }
+
+    IEnumerator TypeLine(string line)
+    {
+        isTyping = true;
+        dialogue.text = "";
+        foreach (char c in line.ToCharArray())
+        {
+            dialogue.text += c;
+            if (skip)
+            {
+                dialogue.text = line;
+                break;
+            }
+            yield return new WaitForSeconds(typingSpeed);
+        }
+        isTyping = false;
+        skip = false;
+    }
+
+}
