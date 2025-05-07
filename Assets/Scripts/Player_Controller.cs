@@ -7,10 +7,12 @@ using UnityEngine.InputSystem;
 
 public class Player_Controller : MonoBehaviour
 {
+    // Components
     public Rigidbody2D playerRB;
     public Collider2D playerCollider;
     public Transform groundCheck;
-
+    
+    // Numeric variables
     public float playerSpeed;
     public float maxSpeed;
     public float jumpForce;
@@ -38,38 +40,40 @@ public class Player_Controller : MonoBehaviour
     private bool dash;
     private bool faceRight = true;
 
+    // Input Actions
     InputAction moveAction;
     InputAction jumpAction;
     InputAction dashAction;
 
+    // Reference to players velocity on X-axis so we can track it in inspector
     public Vector2 PlayerSpeedX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Get references for Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
         dashAction = InputSystem.actions.FindAction("Dash");
 
+        // Get references to required compontent and make sure player's collider is enabled. 
         playerRB = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         groundCheck = transform.Find("GroundCheck");
         playerCollider.enabled = true;
         playerHasControl = true;
-        dashCooldown = new Cooldown(4f); 
 
-        if (_debug)
-        {
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckRadius);
-        }
+        // probably move somewhere else. 
+        dashCooldown = new Cooldown(4f);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-
         PlayerSpeedX = playerRB.linearVelocity;
+
+        // Get pressed inputs if player has controls and is not dashing 
         if (playerHasControl && !dashing)
         {
             GetInputs();
@@ -79,7 +83,7 @@ public class Player_Controller : MonoBehaviour
         {
             Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckRadius);
         }
-
+        // Check when dashing should be over
         if(dashing)
         {
             dashTime += Time.deltaTime;
@@ -90,8 +94,9 @@ public class Player_Controller : MonoBehaviour
                 playerRB.gravityScale = 1;
             }
         }
-
-        if(!canDash)
+        
+        // Check if next dash is available 
+        if (!canDash)
         {
             if (!dashCooldown.isOnCooldown) 
             {
@@ -116,7 +121,6 @@ public class Player_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         CheckGround();
         MoveCharacter();
 
@@ -132,10 +136,12 @@ public class Player_Controller : MonoBehaviour
 
     private void MoveCharacter()
     {
+        // Limit all controls for dash duration
         if(dashing)
         {
             return;
         }
+        // normal movement if player is on ground. On air we want to limit controls
         if(grounded)
         {
         playerRB.AddRelativeForceX(
@@ -147,6 +153,7 @@ public class Player_Controller : MonoBehaviour
     moveDirection.x * playerSpeed * airFrictionMultiplier, ForceMode2D.Impulse);
         }
 
+        // Keep players speed within maximum speed
         if(playerRB.linearVelocityX > maxSpeed)
         {
             playerRB.linearVelocityX =  maxSpeed;   
@@ -155,17 +162,22 @@ public class Player_Controller : MonoBehaviour
         {
             playerRB.linearVelocityX = -maxSpeed;
         }
-
+        
+        // Jump if jump key was pressed and player is on ground. 
         if (jump && grounded)
         {
+            playerRB.linearVelocityY = 0; 
             playerRB.AddRelativeForceY(jumpForce, ForceMode2D.Impulse);
             grounded = false;
         }
 
+        // Dash if dash key was pressed, player is pressing directional key (left or right) and player can dash. Player cannot dash while standing still.
         if (dash && moveDirection != Vector2.zero && canDash)
         {
             Dash();
         }
+
+        // Rotate player depending where players is trying to go.
         if (faceRight && moveDirection.x == -1)
         {
             gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -196,7 +208,6 @@ public class Player_Controller : MonoBehaviour
     {
         dashing = true;
         playerRB.AddRelativeForceX(moveDirection.x * dashSpeed, ForceMode2D.Impulse);
-        // transform.Translate(new Vector3(moveDirection.x * dashSpeed * Time.deltaTime, 0, 0));
         dashCooldown.StartCooldown();
         canDash = false;
         playerRB.gravityScale = 0;
