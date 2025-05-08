@@ -12,7 +12,6 @@ public class Dialogue : MonoBehaviour
     public bool isTyping;
     public bool skip;
     public TMP_Text dialogue;
-    public TMP_Text diaName;
     public float typingSpeed = 0.05f;
 
     [SerializeField]
@@ -31,6 +30,7 @@ public class Dialogue : MonoBehaviour
     InputAction interactAction;
     float inputCD = 0.25f;
     bool inputReady = true;
+    bool choiceGiven = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -47,7 +47,7 @@ public class Dialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (interactAction.IsPressed() && inputReady)
+        if (interactAction.IsPressed() && inputReady && !choiceGiven)
         {
             inputReady = false;
             StartCoroutine(InputCooldown());
@@ -89,7 +89,7 @@ public class Dialogue : MonoBehaviour
             // Display the text on screen!
             StartCoroutine(TypeLine(text));
         }
-        if (story.currentChoices.Count > 0)
+        else if (story.currentChoices.Count > 0)
         {
             buttonGroup.alpha = 0;
             for (int i = 0; i < story.currentChoices.Count; ++i)
@@ -102,6 +102,11 @@ public class Dialogue : MonoBehaviour
                 });
             }
             StartCoroutine(ButtonFadeIn());
+            choiceGiven = true;
+        }
+        else if (!story.canContinue && story.currentChoices.Count <= 0)
+        {
+            GameManager.instance.EndStory();
         }
     }
 
@@ -109,8 +114,7 @@ public class Dialogue : MonoBehaviour
     {
         while (buttonGroup.alpha < 1)
         {
-            buttonGroup.alpha += Time.deltaTime / 2;
-            buttonGroup.alpha += Time.deltaTime;
+            buttonGroup.alpha += Time.deltaTime / 1.5f;
             yield return null;
             Debug.Log("Fading in");
         }
@@ -118,6 +122,7 @@ public class Dialogue : MonoBehaviour
 
     void OnClickChoiceButton(Choice choice)
     {
+        choiceGiven = false;
         story.ChooseChoiceIndex(choice.index);
         PlayStory();
     }

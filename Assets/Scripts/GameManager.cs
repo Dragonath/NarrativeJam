@@ -20,11 +20,13 @@ public class GameManager : MonoBehaviour
     public GameObject optionsMenu;
     public GameObject exitMenu;
     public GameObject deathMenu;
+    public GameObject dialogueMenu;
 
     CanvasGroup deathCanvas; // Reference to the CanvasGroup component for fading effects
     public CanvasGroup pauseCanvas;
     public bool pauseActive = false;
     public CanvasGroup sceneTransition;
+    public bool inDialogue = false;
 
     InputAction menuAction;
 
@@ -167,6 +169,18 @@ public class GameManager : MonoBehaviour
             sceneTransition.alpha -= Time.deltaTime * 2;
             yield return null;
         }
+    }
+
+    public void BeginStory()
+    {
+        dialogueMenu.SetActive(true);
+        inDialogue = true;
+    }
+
+    public void EndStory()
+    {
+        dialogueMenu.SetActive(false);
+        inDialogue = false;
     }
 
 }
