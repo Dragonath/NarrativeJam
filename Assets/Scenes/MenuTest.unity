@@ -119,6 +119,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &363502693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5551811566531161163, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+  m_PrefabInstance: {fileID: 5318713603628999992}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &363502699
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363502693}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1806191546
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,10 +280,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2393583200313610211, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 4.668457
+      objectReference: {fileID: 0}
+    - target: {fileID: 4318189927014836257, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 4.668457
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352558517947370493, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 4.668457
+      objectReference: {fileID: 0}
+    - target: {fileID: 6143441627975280640, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      propertyPath: buttonGroup
+      value: 
+      objectReference: {fileID: 363502699}
+    - target: {fileID: 7169422217256714124, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 4.668457
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5551811566531161163, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 363502699}
   m_SourcePrefab: {fileID: 100100000, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -20,22 +20,22 @@ public class Dialogue : MonoBehaviour
     public Story story;
 
     [SerializeField]
-    private Canvas canvas = null;
+    private Canvas buttonCanvas;
     [SerializeField]
-    private Canvas buttonCanvas = null;
+    CanvasGroup buttonGroup;
     [SerializeField]
-    private Button buttonPrefab = null;
+    private Button buttonPrefab;
 
     public static event Action<Story> OnCreateStory;
 
     InputAction interactAction;
-    float inputCD = 0.5f;
+    float inputCD = 0.25f;
     bool inputReady = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+       
     }
 
     void Awake()
@@ -91,6 +91,7 @@ public class Dialogue : MonoBehaviour
         }
         if (story.currentChoices.Count > 0)
         {
+            buttonGroup.alpha = 0;
             for (int i = 0; i < story.currentChoices.Count; ++i)
             {
                 Choice choice = story.currentChoices[i];
@@ -100,6 +101,18 @@ public class Dialogue : MonoBehaviour
                     OnClickChoiceButton(choice);
                 });
             }
+            StartCoroutine(ButtonFadeIn());
+        }
+    }
+
+    IEnumerator ButtonFadeIn()
+    {
+        while (buttonGroup.alpha < 1)
+        {
+            buttonGroup.alpha += Time.deltaTime / 2;
+            buttonGroup.alpha += Time.deltaTime;
+            yield return null;
+            Debug.Log("Fading in");
         }
     }
 
