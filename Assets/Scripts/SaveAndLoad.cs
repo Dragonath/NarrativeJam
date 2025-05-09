@@ -2,6 +2,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 class PlayerData
@@ -11,6 +12,10 @@ class PlayerData
     public bool runUnlocked;
     public bool jumpUnlocked;
     public bool walkUnlocked;
+    public Vector3 playerPosition;
+    public int playerHealth;
+    public int playerMaxHealth;
+    public int maxJumpCount;
 }
 
 public class SaveAndLoad : MonoBehaviour
@@ -18,10 +23,7 @@ public class SaveAndLoad : MonoBehaviour
     public static SaveAndLoad saveAndLoad;
 
     public int currentLevelIndex;
-    public bool dashUnlocked;
-    public bool runUnlocked;
-    public bool jumpUnlocked;
-    public bool walkUnlocked;
+
 
     void Awake()
     {
@@ -50,12 +52,16 @@ public class SaveAndLoad : MonoBehaviour
         FileStream file = File.Create(Application.persistentDataPath + "/playerInfo.dat");
         PlayerData data = new PlayerData();
 
-        // Save the current level index
+        // Save the current data
         data.currentLevelIndex = currentLevelIndex;
-        data.dashUnlocked = dashUnlocked;
-        data.jumpUnlocked = jumpUnlocked;
-        data.runUnlocked = runUnlocked;
-        data.walkUnlocked = walkUnlocked;
+        data.dashUnlocked = Player_Controller.instance.dashUnlocked;
+        data.jumpUnlocked = Player_Controller.instance.jumpUnlocked;
+        data.runUnlocked = Player_Controller.instance.runUnlocked;
+        data.walkUnlocked = Player_Controller.instance.walkUnlocked;
+        data.playerPosition = Player_Controller.instance.playerRB.position;
+        data.playerHealth = Player_Controller.instance.currentHealth;
+        data.playerMaxHealth = Player_Controller.instance.maxHealth;
+        data.maxJumpCount = Player_Controller.instance.maxJumpCount;
 
         bf.Serialize(file, data);
         file.Close();
@@ -71,7 +77,15 @@ public class SaveAndLoad : MonoBehaviour
             file.Close();
 
             currentLevelIndex = data.currentLevelIndex;
+            Player_Controller.instance.dashUnlocked = data.dashUnlocked;
+            Player_Controller.instance.runUnlocked = data.runUnlocked;
+            Player_Controller.instance.jumpUnlocked = data.jumpUnlocked;
+            Player_Controller.instance.walkUnlocked = data.walkUnlocked;
+            Player_Controller.instance.currentHealth = data.playerHealth;
+            Player_Controller.instance.maxHealth = data.playerMaxHealth;
+            Player_Controller.instance.maxJumpCount = data.maxJumpCount;
 
+            GameManager.instance.LoadScene(currentLevelIndex, data.playerPosition);
         }
     }
 }

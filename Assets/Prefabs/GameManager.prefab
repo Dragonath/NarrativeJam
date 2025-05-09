@@ -1163,7 +1163,7 @@ MonoBehaviour:
   optionsMenu: {fileID: 3221728255982142711}
   exitMenu: {fileID: 6334753096137748323}
   deathMenu: {fileID: 4873931613048176696}
-  dialogueMenu: {fileID: 0}
+  dialogueMenu: {fileID: 7732175559055984796}
   pauseCanvas: {fileID: 6663594966734354654}
   pauseActive: 0
   sceneTransition: {fileID: 9142909596408957821}
@@ -1181,10 +1181,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevelIndex: 0
-  dashUnlocked: 0
-  runUnlocked: 0
-  jumpUnlocked: 0
-  walkUnlocked: 0
 --- !u!114 &4942594881377552886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5685,7 +5681,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2010805978809800026
 Transform:
   m_ObjectHideFlags: 0
@@ -5718,11 +5714,15 @@ MonoBehaviour:
   isTyping: 0
   skip: 0
   dialogue: {fileID: 1960662036321279966}
-  typingSpeed: 0.05
+  typingSpeed: 0.02
   inkJSONAsset: {fileID: 4900000, guid: 6cf48bb6d89824cc69e35b43f9a1aca6, type: 3}
+  stories:
+  - {fileID: 4900000, guid: 6cf48bb6d89824cc69e35b43f9a1aca6, type: 3}
+  - {fileID: 4900000, guid: 1ee3489200bb34611a3c98e3415ddd84, type: 3}
   buttonCanvas: {fileID: 1132923937171938585}
   buttonGroup: {fileID: 4913092264855878352}
   buttonPrefab: {fileID: 612688245523151409, guid: 3c98aaee89b6dc64880dd234d60f81de, type: 3}
+  choiceGiven: 0
 --- !u!1 &7849147172697721020
 GameObject:
   m_ObjectHideFlags: 0
