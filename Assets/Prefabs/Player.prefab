@@ -52,19 +52,27 @@ MonoBehaviour:
   playerRB: {fileID: 0}
   playerCollider: {fileID: 0}
   groundCheck: {fileID: 1914395793123432756}
+  maxHealth: 0
+  currentHealth: 0
+  maxJumpCount: 0
   playerSpeed: 3
   maxSpeed: 5
-  jumpForce: 2
+  jumpForce: 15
   dashSpeed: 25
   dashTime: 0
   maxDashTime: 0.4
-  airFrictionMultiplier: 0
+  airFrictionMultiplier: 0.05
   groundCheckRadius: 0.02
-  _debug: 0
+  pushValue: 2
+  _debug: 1
   grounded: 1
   canDash: 0
   dashing: 0
   playerHasControl: 1
+  dashUnlocked: 0
+  runUnlocked: 0
+  jumpUnlocked: 0
+  walkUnlocked: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 8

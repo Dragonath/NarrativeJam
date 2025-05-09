@@ -25,7 +25,7 @@ public class Player_Controller : MonoBehaviour
     public Cooldown dashCooldown;
     public float airFrictionMultiplier;
     public float groundCheckRadius;
-
+    public float pushValue;
 
     // Booleans
     public bool _debug;
@@ -45,15 +45,18 @@ public class Player_Controller : MonoBehaviour
     public LayerMask groundLayer;
     public LayerMask enemyLayer;
 
+    public Vector2 boxSize;
     private Vector2 moveDirection;
     private bool jump;
     private bool dash;
+    private bool moveDown; 
     private bool faceRight = true;
 
     // Input Actions
     InputAction moveAction;
     InputAction jumpAction;
     InputAction dashAction;
+    
 
     // Reference to players velocity on X-axis so we can track it in inspector
     public Vector2 PlayerSpeedX;
@@ -97,6 +100,7 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         PlayerSpeedX = playerRB.linearVelocity;
 
         // Get pressed inputs if player has controls and is not dashing 
@@ -107,6 +111,7 @@ public class Player_Controller : MonoBehaviour
 
         if (_debug)
         {
+            Debug.Log(moveDirection);
             Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckRadius);
         }
         // Check when dashing should be over
@@ -134,6 +139,12 @@ public class Player_Controller : MonoBehaviour
     private void GetInputs()
     {
         moveDirection = moveAction.ReadValue<Vector2>();
+        
+        if(moveDirection.y == -1.0f)
+        {
+            Debug.Log("Go down");
+            moveDown = true;
+        }
         if (jumpAction.IsPressed())
         {
             jump = true;
@@ -156,6 +167,7 @@ public class Player_Controller : MonoBehaviour
             moveDirection = Vector2.zero;
         }
 
+        moveDown = false;
         jump = false;
         dash = false;
     }
@@ -177,6 +189,19 @@ public class Player_Controller : MonoBehaviour
         {
             playerRB.AddRelativeForceX(
     moveDirection.x * playerSpeed * airFrictionMultiplier, ForceMode2D.Impulse);
+        }
+
+        if(moveDown)
+        {
+            Collider2D col = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+            if (col != null)
+            {
+                if(col.CompareTag("Platform"))
+                {
+                    StartCoroutine(DisablePlayerCollider(0.5f));
+                    playerRB.AddRelativeForceY(moveDirection.y * pushValue, ForceMode2D.Impulse);
+                }
+            }
         }
 
         // Keep players speed within maximum speed
@@ -223,11 +248,9 @@ public class Player_Controller : MonoBehaviour
     {
         if (grounded) return;
 
-        if (Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer))
+        if(Physics2D.BoxCast(groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer))
         {
             grounded = true;
-            Debug.Log("Landed");
-
         }
     }  
     private void Dash()
@@ -252,6 +275,17 @@ public class Player_Controller : MonoBehaviour
             gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
             faceRight = true;
         }
+    }
+
+    private IEnumerator DisablePlayerCollider(float time)
+    {
+        playerCollider.enabled = false;
+        yield return new WaitForSeconds(time);
+        playerCollider.enabled = true;
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(groundCheck.position - transform.up * groundCheckRadius, boxSize);
     }
 }
     
