@@ -39,6 +39,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: FarBack
+    uniqueID: 2883451093
+    locked: 0
+  - name: MiddleBack
+    uniqueID: 4147067587
+    locked: 0
   - name: Background
     uniqueID: 2494728191
     locked: 0
