@@ -6,17 +6,20 @@ using Ink.Runtime;
 using UnityEngine.UI;
 using System;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class Dialogue : MonoBehaviour
 {
     public bool isTyping;
     public bool skip;
     public TMP_Text dialogue;
-    public float typingSpeed = 0.05f;
+    public float typingSpeed = 0.02f;
 
     [SerializeField]
     private TextAsset inkJSONAsset = null;
-    public Story story;
+    private Story story;
+
+    public List<TextAsset> stories;
 
     [SerializeField]
     private Canvas buttonCanvas;
@@ -27,10 +30,7 @@ public class Dialogue : MonoBehaviour
 
     public static event Action<Story> OnCreateStory;
 
-    InputAction interactAction;
-    float inputCD = 0.25f;
-    bool inputReady = true;
-    bool choiceGiven = false;
+    public bool choiceGiven = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,43 +40,27 @@ public class Dialogue : MonoBehaviour
 
     void Awake()
     {
-        StartStory();
-        interactAction = InputSystem.actions.FindAction("Interact");
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (interactAction.IsPressed() && inputReady && !choiceGiven)
-        {
-            inputReady = false;
-            StartCoroutine(InputCooldown());
-            if (!isTyping)
-            {
-                PlayStory();
-            }
-            else if (isTyping)
-            {
-                skip = true;
-            }
-        }
+
     }
 
-    IEnumerator InputCooldown()
-    {
-        yield return new WaitForSeconds(inputCD);
-        inputReady = true;
-    }
-
-    void StartStory()
+    public void StartStory(int index)
     {
         DeleteButtons();
-        story = new Story(inkJSONAsset.text);
-        if (OnCreateStory != null) OnCreateStory(story);
+        story = new Story (stories[index].text);
+        if (OnCreateStory != null)
+        {
+            OnCreateStory(story);
+        }
         PlayStory();
     }
 
-    void PlayStory()
+    public void PlayStory()
     {
         DeleteButtons();
 

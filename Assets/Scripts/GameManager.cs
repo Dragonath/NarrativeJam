@@ -29,6 +29,14 @@ public class GameManager : MonoBehaviour
     public bool inDialogue = false;
 
     InputAction menuAction;
+    InputAction interactAction;
+
+    private Dialogue dialogue; // Reference to the Dialogue component for managing story dialogues
+    private int currentStoryIndex = 0; // Index of the current story being played
+    private bool inTrigger = false; // Flag to check if the player is in a trigger area
+
+    readonly float inputCD = 0.25f;
+    bool inputReady = true;
 
     void Awake()
     {
@@ -51,7 +59,12 @@ public class GameManager : MonoBehaviour
         deathCanvas = deathMenu.GetComponent<CanvasGroup>(); // Get the CanvasGroup component from the death menu
         deathCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
         pauseCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
-        menuAction = InputSystem.actions.FindAction("Menu"); // Find the menu action from the Input System
+
+        // ACTIONS
+        interactAction = InputSystem.actions.FindAction("Interact"); 
+        menuAction = InputSystem.actions.FindAction("Menu"); 
+
+        dialogue = dialogueMenu.GetComponent<Dialogue>(); // Get the Dialogue component from this GameObject
         SceneManager.sceneLoaded += OnSceneLoaded;
         StartCoroutine(SceneFadeOut());
     }
@@ -64,10 +77,14 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //  Check if the player is alive and if the game is paused
         if (playerInput || !playerAlive)
         {
-            if (menuAction.IsPressed() && !pauseActive)
+            // MENU
+            if (menuAction.IsPressed() && !pauseActive && inputReady)
             {
+                inputReady = false; // Disable input until cooldown is over
+                StartCoroutine(InputCooldown()); // Start the input cooldown coroutine
                 if (!paused)
                 {
                     pauseActive = true;
@@ -81,7 +98,43 @@ public class GameManager : MonoBehaviour
                     StartCoroutine(FadeMenuOut());
                 }
             }
+
+            // INTERACTIONS
+            if (interactAction.IsPressed() && inputReady)
+            {
+                inputReady = false;
+                StartCoroutine(InputCooldown());
+
+                // Dialogue
+                if (inTrigger && !inDialogue)
+                {
+                    inTrigger = false; // Reset the trigger flag
+                    dialogueMenu.SetActive(true); // Activate the dialogue menu
+                    BeginStory(currentStoryIndex); // Start the story with the current index
+                }
+                else if (inDialogue && !dialogue.choiceGiven)
+                {
+                    if (!dialogue.isTyping)
+                    {
+                        dialogue.PlayStory();
+                    }
+                    else if (dialogue.isTyping)
+                    {
+                        dialogue.skip = true;
+                    }
+                }
+                else
+                {
+                    // INTERACT !
+                }
+            }
         }
+    }
+
+    IEnumerator InputCooldown()
+    {
+        yield return new WaitForSeconds(inputCD);
+        inputReady = true;
     }
 
     IEnumerator FadeMenuIn()
@@ -132,6 +185,14 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(index);
         SceneManager.LoadSceneAsync(index + 1);
     }
+    public void LoadScene(int index, Vector3 playerPos)
+    {
+        StartCoroutine(SceneFadeIn());
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        SceneManager.LoadSceneAsync(index);
+        Player_Controller.instance.playerRB.position = playerPos;
+    }
+
 
     public void Fade()
     {
@@ -171,10 +232,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void BeginStory()
+    public void BeginStory(int dialogueIndex)
     {
         dialogueMenu.SetActive(true);
         inDialogue = true;
+        dialogue.StartStory(dialogueIndex);
     }
 
     public void EndStory()
@@ -182,5 +244,24 @@ public class GameManager : MonoBehaviour
         dialogueMenu.SetActive(false);
         inDialogue = false;
     }
+
+    public void OpenStory(int index)
+    {
+        inTrigger = true;
+        currentStoryIndex = index;
+    }
+
+    public void CloseStory()
+    {
+        inTrigger = false;
+        currentStoryIndex = 0;
+    }
+
+    public void DoDamage(int damage)
+    {
+        Debug.Log(damage + " Damage taken");
+        Player_Controller.instance.currentHealth -= damage;
+    }
+
 
 }

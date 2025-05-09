@@ -13,6 +13,9 @@ public class Player_Controller : MonoBehaviour
     public Transform groundCheck;
     
     // Numeric variables
+    public int maxHealth;
+    public int currentHealth;
+    public int maxJumpCount;
     public float playerSpeed;
     public float maxSpeed;
     public float jumpForce;
@@ -23,6 +26,7 @@ public class Player_Controller : MonoBehaviour
     public float airFrictionMultiplier;
     public float groundCheckRadius;
 
+
     // Booleans
     public bool _debug;
     public bool grounded;
@@ -30,6 +34,12 @@ public class Player_Controller : MonoBehaviour
     public bool dashing;
     public bool playerHasControl;
     private bool dead;
+
+    // Unlocks
+    public bool dashUnlocked;
+    public bool runUnlocked;
+    public bool jumpUnlocked;
+    public bool walkUnlocked;
 
     // LayerMasks
     public LayerMask groundLayer;
@@ -47,6 +57,22 @@ public class Player_Controller : MonoBehaviour
 
     // Reference to players velocity on X-axis so we can track it in inspector
     public Vector2 PlayerSpeedX;
+
+    public static Player_Controller instance; // Static instance of the Player_Controller class
+
+    void Awake()
+    {
+        // Check if an instance of SoundManager already exists
+        if (instance == null)
+        {
+            instance = this; // Assign this instance to the static instance
+            DontDestroyOnLoad(gameObject); // Prevent this object from being destroyed on scene load
+        }
+        else
+        {
+            Destroy(gameObject); // Destroy this object if another instance already exists
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
