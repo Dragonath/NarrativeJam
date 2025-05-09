@@ -26,7 +26,8 @@ public class Player_Controller : MonoBehaviour
     public float airFrictionMultiplier;
     public float groundCheckRadius;
     public float pushValue;
-
+    public float jumpsLeft;
+    
     // Booleans
     public bool _debug;
     public bool grounded;
@@ -100,8 +101,15 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // for tracking player speed in inspector
         PlayerSpeedX = playerRB.linearVelocity;
+
+        // Check if player is grounded, if yes reset remaining jumps
+        grounded = Physics2D.BoxCast(groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer);
+        if(grounded)
+        {
+            jumpsLeft = maxJumpCount;
+        }
 
         // Get pressed inputs if player has controls and is not dashing 
         if (playerHasControl && !dashing)
@@ -158,7 +166,7 @@ public class Player_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CheckGround();
+       // CheckGround();
         MoveCharacter();
 
         // Reset Variables
@@ -215,11 +223,12 @@ public class Player_Controller : MonoBehaviour
         }
         
         // Jump if jump key was pressed and player is on ground. 
-        if (jump && grounded)
+        if (jump && jumpsLeft > 0)
         {
             playerRB.linearVelocityY = 0; 
             playerRB.AddRelativeForceY(jumpForce, ForceMode2D.Impulse);
             grounded = false;
+            jumpsLeft--;
         }
 
         // Dash if dash key was pressed, player is pressing directional key (left or right) and player can dash. Player cannot dash while standing still.
@@ -246,11 +255,15 @@ public class Player_Controller : MonoBehaviour
 
     private void CheckGround()
     {
-        if (grounded) return;
 
+
+        // Check box under player for ground - if found, we are standing on ground
         if(Physics2D.BoxCast(groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer))
         {
             grounded = true;
+        } else
+        {
+            grounded= false; 
         }
     }  
     private void Dash()
@@ -283,10 +296,25 @@ public class Player_Controller : MonoBehaviour
         yield return new WaitForSeconds(time);
         playerCollider.enabled = true;
     }
+
+    public void Knock(float knockback)
+    {
+        playerRB.linearVelocity = Vector2.zero;
+
+        playerRB.AddRelativeForceX(-knockback, ForceMode2D.Impulse);
+        playerRB.AddRelativeForceY(knockback, ForceMode2D.Impulse);
+        Debug.Log("Player knocked");
+
+
+    }
+
+
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(groundCheck.position - transform.up * groundCheckRadius, boxSize);
     }
+
 }
     
 public class Cooldown

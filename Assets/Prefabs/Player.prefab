@@ -52,12 +52,12 @@ MonoBehaviour:
   playerRB: {fileID: 0}
   playerCollider: {fileID: 0}
   groundCheck: {fileID: 1914395793123432756}
-  maxHealth: 0
-  currentHealth: 0
-  maxJumpCount: 0
+  maxHealth: 3
+  currentHealth: 3
+  maxJumpCount: 1
   playerSpeed: 3
   maxSpeed: 5
-  jumpForce: 15
+  jumpForce: 17
   dashSpeed: 25
   dashTime: 0
   maxDashTime: 0.4
@@ -71,7 +71,7 @@ MonoBehaviour:
   playerHasControl: 1
   dashUnlocked: 0
   runUnlocked: 0
-  jumpUnlocked: 0
+  jumpUnlocked: 1
   walkUnlocked: 0
   groundLayer:
     serializedVersion: 2
@@ -79,6 +79,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 0
+  boxSize: {x: 0.8, y: 0.03}
   PlayerSpeedX: {x: 0, y: 0}
 --- !u!212 &1051988535004059246
 SpriteRenderer:
@@ -169,7 +170,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.12740195, y: -0.35856175}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -179,7 +180,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.3125, y: 2.4375}
+  m_Size: {x: 0.8168299, y: 1.7203765}
   m_EdgeRadius: 0
 --- !u!50 &2903565161919527520
 Rigidbody2D:
@@ -206,7 +207,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!95 &7642683187360721432
 Animator:
