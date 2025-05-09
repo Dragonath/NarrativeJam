@@ -2,7 +2,6 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [Serializable]
 class PlayerData
@@ -20,17 +19,17 @@ class PlayerData
 
 public class SaveAndLoad : MonoBehaviour
 {
-    public static SaveAndLoad saveAndLoad;
+    public static SaveAndLoad instance;
 
     public int currentLevelIndex;
 
 
     void Awake()
     {
-        if (saveAndLoad == null)
+        if (instance == null)
         {
             DontDestroyOnLoad(gameObject);
-            saveAndLoad = this;
+            instance = this;
         }
         else
         {

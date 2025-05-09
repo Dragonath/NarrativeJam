@@ -190,7 +190,8 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SceneFadeIn());
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(index);
-        Player_Controller.instance.playerRB.position = playerPos;
+        if (playerPos != null)
+            Player_Controller.instance.playerRB.position = playerPos;
     }
 
 
