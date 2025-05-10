@@ -59,10 +59,11 @@ public class GameManager : MonoBehaviour
         deathCanvas = deathMenu.GetComponent<CanvasGroup>(); // Get the CanvasGroup component from the death menu
         deathCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
         pauseCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
+        sceneTransition.alpha = 1; // Set the initial alpha value to 1 (invisible)
 
         // ACTIONS
         interactAction = InputSystem.actions.FindAction("Interact"); 
-        menuAction = InputSystem.actions.FindAction("Menu"); 
+        menuAction = InputSystem.actions.FindAction("Menu");
 
         dialogue = dialogueMenu.GetComponent<Dialogue>(); // Get the Dialogue component from this GameObject
         SceneManager.sceneLoaded += OnSceneLoaded;
