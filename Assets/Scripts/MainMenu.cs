@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
+using System;
 
 public class MainMenu : MonoBehaviour
 {
@@ -11,8 +12,6 @@ public class MainMenu : MonoBehaviour
     public GameObject levelPanel;
     public GameObject optionsPanel;
     public GameObject exitPanel;
-    public GameObject unlockAllLevelsPanel;
-    public GameObject buttons;
     public GameObject creditsPanel;
 
     public Button continueButton;
@@ -41,9 +40,19 @@ public class MainMenu : MonoBehaviour
         menuPanel.gameObject.SetActive(false);
         levelPanel.gameObject.SetActive(true);
     }
+    public void CancelLoad()
+    {
+        SoundManager.PlaySound("menuHover");
+        menuPanel.gameObject.SetActive(true);
+        levelPanel.gameObject.SetActive(false);
+    }
     public void StartGame()
     {
-        GameManager.instance.LoadScene(1, new Vector3(0,0,0));
+        //Delete the save file and set default values
+        File.Delete(Application.persistentDataPath + "/playerInfo.dat");
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        SceneManager.LoadSceneAsync(1);
+        Destroy(gameObject);
     }
     public void LoadGame()
     {

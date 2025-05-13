@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance; // Singleton instance of GameManager
     public GameObject player;
+    public int playerDefaultHp = 10; // Default health of the player
 
     // Game state variables
     public bool playerAlive = true;

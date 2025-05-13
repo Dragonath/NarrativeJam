@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Settings : MonoBehaviour
 {
@@ -39,7 +40,10 @@ public class Settings : MonoBehaviour
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
-        soundManager = GameManager.instance.GetComponent<SoundManager>();
+        if(soundManager == null && SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            soundManager = GameManager.instance.GetComponent<SoundManager>();
+        }
         masterSlider.value = Mathf.Pow(10, (PlayerPrefs.GetFloat("Master") / 20));
         soundSlider.value = Mathf.Pow(10, (PlayerPrefs.GetFloat("Sound") / 20));
         musicSlider.value = Mathf.Pow(10, (PlayerPrefs.GetFloat("Music") / 20));  
@@ -66,21 +70,48 @@ public class Settings : MonoBehaviour
 
     public void SetLevel(float sliderValue)
     {
-        soundManager.SetVolume(targetGroup, sliderValue);
+        if (soundManager != null)
+        {
+            soundManager.SetVolume(targetGroup, sliderValue);
+        }
     }
 
     public void SetMasterLevel(float sliderValue)
     {
-        soundManager.SetVolume(mixer.FindMatchingGroups("Master")[0], sliderValue);
+        if (soundManager != null)
+        {
+            soundManager.SetVolume(mixer.FindMatchingGroups("Master")[0], sliderValue);
+        } 
+        else
+        {
+            mixer.SetFloat("Master", Mathf.Log10(sliderValue) * 20);
+            PlayerPrefs.SetFloat("Master", sliderValue);
+        }
     }
 
     public void SetSoundLevel(float sliderValue)
     {
-        soundManager.SetVolume(mixer.FindMatchingGroups("Sound")[0], sliderValue);
+        if (soundManager != null)
+        {
+            soundManager.SetVolume(mixer.FindMatchingGroups("Sound")[0], sliderValue);
+        }
+        else
+        {
+            mixer.SetFloat("Sound", Mathf.Log10(sliderValue) * 20);
+            PlayerPrefs.SetFloat("Sound", sliderValue);
+        }
     }
     public void SetMusicLevel(float sliderValue)
     {
-        soundManager.SetVolume(mixer.FindMatchingGroups("Music")[0], sliderValue);
+        if (soundManager != null)
+        {
+            soundManager.SetVolume(mixer.FindMatchingGroups("Music")[0], sliderValue);
+        }
+        else
+        {
+            mixer.SetFloat("Music", Mathf.Log10(sliderValue) * 20);
+            PlayerPrefs.SetFloat("Music", sliderValue);
+        }
     }
     
     public void SaveSettings()
