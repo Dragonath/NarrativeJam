@@ -11,6 +11,11 @@ public class SmoothCamera : MonoBehaviour
 
     private Vector3 velocity = Vector3.zero;
 
+    private void Start()
+    {
+        target = Player_Controller.instance.transform; 
+    }
+
     private void FixedUpdate()
     {
         if (target != null)

@@ -91,6 +91,7 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(InputCooldown()); // Start the input cooldown coroutine
                 if (!paused)
                 {
+                    Player_Controller.instance.playerHasControl = false; // Disable player control
                     pauseActive = true;
                     pauseMenu.SetActive(true); // Activate the pause menu
                     StartCoroutine(FadeMenuIn()); // Start fading in the pause menu
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour
                     pauseActive = true;
                     Time.timeScale = 1;
                     StartCoroutine(FadeMenuOut());
+                    Player_Controller.instance.playerHasControl = true; // Enable player control
                 }
             }
 

@@ -1,18 +1,46 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject player;
+    private GameObject player;
     public GameObject pausePanel;
     public GameObject optionsPanel;
     public GameObject exitPanel;
     public GameObject deathPanel;
-    public GameManager gameManager;
+    private GameManager gameManager;
+
+    public Button loadButton;
 
     private void Start()
     {
+        player = Player_Controller.instance.gameObject;
         gameManager = GameManager.instance;
+        if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
+        {
+            loadButton.interactable = true;
+        }
+        else
+        {
+            loadButton.interactable = false;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameManager.instance.paused)
+        {
+            if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
+            {
+                loadButton.interactable = true;
+            }
+            else
+            {
+                loadButton.interactable = false;
+            }
+        }
     }
 
     public void Continue()
@@ -20,13 +48,6 @@ public class PauseMenu : MonoBehaviour
         SoundManager.PlaySound("menuSelect");
         gameManager.paused = false;
         pausePanel.SetActive(false);
-
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player");
-
-        if (player != null && player.GetComponent<PlayerControls>().getDead())
-            deathPanel.SetActive(true);
-
         Time.timeScale = 1;
 
     }
@@ -73,4 +94,15 @@ public class PauseMenu : MonoBehaviour
         deathPanel.SetActive(state);
     }
 
+    public void SaveGame()
+    {
+        SoundManager.PlaySound("menuSelect");
+        SaveAndLoad.instance.Save();
+    }
+
+    public void LoadGame()
+    {
+        SoundManager.PlaySound("menuSelect");
+        SaveAndLoad.instance.Load();
+    }
 }
