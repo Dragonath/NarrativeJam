@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 
 public class SoundManager : MonoBehaviour
 {
-    public static AudioClip death, menuHover, menuSelect, menuBack, menuClose, menuOpen, buttonClick, jump;    
+    public static AudioClip death, menuHover, menuSelect, menuBack, menuClose, menuOpen, buttonClick, jump, pickup;    
 
     static AudioSource audioSrc;
     public AudioMixer audioMixer;
@@ -37,6 +37,7 @@ public class SoundManager : MonoBehaviour
         menuClose = Resources.Load<AudioClip>("MenuClose");
         buttonClick = Resources.Load<AudioClip>("ButtonClick");
         jump = Resources.Load<AudioClip>("Jump");
+        pickup = Resources.Load<AudioClip>("Pickup");
         // Set initial volume levels from PlayerPrefs
         audioMixer.SetFloat("Master", Mathf.Log10(PlayerPrefs.GetFloat("Master")) * 20);
         audioMixer.SetFloat("Sound", Mathf.Log10(PlayerPrefs.GetFloat("Sound")) * 20);
@@ -77,6 +78,9 @@ public class SoundManager : MonoBehaviour
                 break;
             case "jump":
                 audioSrc.PlayOneShot(jump);
+                break;
+            case "pickupSFX":
+                audioSrc.PlayOneShot(pickup);
                 break;
             default:
                 Debug.LogWarning("Sound not found: " + clip);
