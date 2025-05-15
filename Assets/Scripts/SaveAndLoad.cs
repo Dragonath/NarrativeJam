@@ -65,10 +65,10 @@ public class SaveAndLoad : MonoBehaviour
             Player_Controller.instance.runUnlocked = _runUnlocked;
             Player_Controller.instance.jumpUnlocked = _jumpUnlocked;
             Player_Controller.instance.walkUnlocked = _walkUnlocked;
-            Player_Controller.instance.maxJumpCount = _maxJumpCount;
+            Player_Controller.instance.maxJumps = _maxJumpCount;
             Player_Controller.instance.maxHealth = _playerMaxHealth;
             _playerHealth = Player_Controller.instance.currentHealth;
-            _playerPosition = Player_Controller.instance.playerRB.position;
+            _playerPosition = Player_Controller.instance.rb.position;
         }
     }
 
@@ -129,7 +129,7 @@ public class SaveAndLoad : MonoBehaviour
             _walkUnlocked = false;
             _playerHealth = 10;
             _playerMaxHealth = 10;
-            _maxJumpCount = 1;
+            _maxJumpCount = 2;
         }
     }
 
