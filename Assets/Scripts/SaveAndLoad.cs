@@ -87,12 +87,15 @@ public class SaveAndLoad : MonoBehaviour
 
             GameManager.instance.LoadScene(currentLevelIndex, data.playerPosition);
         }
-        Player_Controller.instance.dashUnlocked = false;
-        Player_Controller.instance.runUnlocked = false;
-        Player_Controller.instance.jumpUnlocked = false;
-        Player_Controller.instance.walkUnlocked = false;
-        Player_Controller.instance.maxHealth = 10;
-        Player_Controller.instance.currentHealth = 10;
-        Player_Controller.instance.maxJumpCount = 1;
+        if(Player_Controller.instance != null)
+        {
+            Player_Controller.instance.dashUnlocked = false;
+            Player_Controller.instance.runUnlocked = false;
+            Player_Controller.instance.jumpUnlocked = false;
+            Player_Controller.instance.walkUnlocked = false;
+            Player_Controller.instance.maxHealth = 10;
+            Player_Controller.instance.currentHealth = 10;
+            Player_Controller.instance.maxJumpCount = 1;
+        }
     }
 }

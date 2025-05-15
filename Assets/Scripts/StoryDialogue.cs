@@ -8,12 +8,12 @@ using System;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
-public class Dialogue : MonoBehaviour
+public class StoryDialogue : MonoBehaviour
 {
     public bool isTyping;
     public bool skip;
     public TMP_Text dialogue;
-    public float typingSpeed = 0.02f;
+    public float typingSpeed = 0.05f;
 
     [SerializeField]
     private TextAsset inkJSONAsset = null;
@@ -35,7 +35,7 @@ public class Dialogue : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       
+        StartStory(0);
     }
 
     void Awake()
@@ -49,7 +49,7 @@ public class Dialogue : MonoBehaviour
 
     }
 
-    public void StartStory(int index)
+    private void StartStory(int index)
     {
         DeleteButtons();
         story = new Story (stories[index].text);
@@ -63,8 +63,7 @@ public class Dialogue : MonoBehaviour
     public void PlayStory()
     {
         DeleteButtons();
-
-        if(story.canContinue)
+        if (story.canContinue)
         {
             // Continue gets the next line of the story
             string text = story.Continue();
