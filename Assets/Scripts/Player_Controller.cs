@@ -4,13 +4,14 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class Player_Controller : MonoBehaviour
 {
     // Components
     public Rigidbody2D playerRB;
-    public Collider2D playerCollider;
-    public Transform groundCheck;
+    public BoxCollider2D playerCollider;
+    public Transform groundCheck;   
     
     // Numeric variables
     public int maxHealth;
@@ -25,8 +26,13 @@ public class Player_Controller : MonoBehaviour
     public Cooldown dashCooldown;
     public float airFrictionMultiplier;
     public float groundCheckRadius;
+    public float slopeCheckRadius;
     public float pushValue;
     public float jumpsLeft;
+    public float slopeAngle;
+    public float maxSlopeAngle;
+    public float minSlopeAngle;
+    public float fallMultiplier;
     
     // Booleans
     public bool _debug;
@@ -35,6 +41,9 @@ public class Player_Controller : MonoBehaviour
     public bool dashing;
     public bool playerHasControl;
     private bool dead;
+    public bool isOnSlope;
+    public bool ascendingSlope;
+    public bool descendingSlope;
 
     // Unlocks
     public bool dashUnlocked;
@@ -47,8 +56,10 @@ public class Player_Controller : MonoBehaviour
     public LayerMask enemyLayer;
 
     public Vector2 boxSize;
+    private Vector2 lastVelocity;
     private Vector2 moveDirection;
     private bool jump;
+    private bool playerWantsToJump;
     private bool dash;
     private bool moveDown; 
     private bool faceRight = true;
@@ -57,7 +68,6 @@ public class Player_Controller : MonoBehaviour
     InputAction moveAction;
     InputAction jumpAction;
     InputAction dashAction;
-    
 
     // Reference to players velocity on X-axis so we can track it in inspector
     public Vector2 PlayerSpeedX;
@@ -88,8 +98,9 @@ public class Player_Controller : MonoBehaviour
 
         // Get references to required compontent and make sure player's collider is enabled. 
         playerRB = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<Collider2D>();
+        playerCollider = GetComponent<BoxCollider2D>();
         groundCheck = transform.Find("GroundCheck");
+
         playerCollider.enabled = true;
         playerHasControl = true;
 
@@ -115,13 +126,12 @@ public class Player_Controller : MonoBehaviour
         if (playerHasControl && !dashing)
         {
             GetInputs();
+            if(moveDirection != Vector2.zero)
+            {
+                playerRB.bodyType = RigidbodyType2D.Dynamic;
+            }
         }
 
-        if (_debug)
-        {
-            Debug.Log(moveDirection);
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckRadius);
-        }
         // Check when dashing should be over
         if(dashing)
         {
@@ -130,7 +140,7 @@ public class Player_Controller : MonoBehaviour
             {
                 dashing = false;
                 dashTime = 0;
-                playerRB.gravityScale = 1;
+                playerRB.gravityScale = 9;
             }
         }
         
@@ -148,14 +158,14 @@ public class Player_Controller : MonoBehaviour
     {
         moveDirection = moveAction.ReadValue<Vector2>();
         
-        if(moveDirection.y == -1.0f)
+        if(moveDirection.y < 0.2f)
         {
-            Debug.Log("Go down");
             moveDown = true;
         }
-        if (jumpAction.IsPressed())
+        if (jumpAction.WasPressedThisFrame())
         {
             jump = true;
+            StartCoroutine(HoldJump(0.2f));
         }
         if (dashAction.WasPressedThisFrame())
         {
@@ -166,18 +176,17 @@ public class Player_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-       // CheckGround();
+
         MoveCharacter();
 
         // Reset Variables
-        if (!dashing)
-        {
-            moveDirection = Vector2.zero;
-        }
-
+        if (!dashing) moveDirection = Vector2.zero;
         moveDown = false;
         jump = false;
-        dash = false;
+         
+
+        // Store old velocity
+        lastVelocity = playerRB.linearVelocity;
     }
 
     private void MoveCharacter()
@@ -187,16 +196,34 @@ public class Player_Controller : MonoBehaviour
         {
             return;
         }
+
+        if (isOnSlope)
+        {
+            if(moveDirection.x == 0)
+            {
+                playerRB.bodyType = RigidbodyType2D.Kinematic;
+                playerRB.linearVelocity = Vector2.zero;
+            }
+            AdjustVelocityToSlope(playerRB.linearVelocity);
+            
+            float yClimb = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * playerSpeed;
+            if (descendingSlope) yClimb *= -1;
+            float xClimb = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * playerSpeed * Mathf.Sign(moveDirection.x);
+            Vector2 climb = new Vector2(xClimb, yClimb);
+            playerRB.AddRelativeForce(climb * playerSpeed, ForceMode2D.Force);
+        }
+
         // normal movement if player is on ground. On air we want to limit controls
         if(grounded)
         {
-        playerRB.AddRelativeForceX(
-            moveDirection.x * playerSpeed, ForceMode2D.Impulse);
+            playerRB.AddRelativeForceX(
+                moveDirection.x * playerSpeed, ForceMode2D.Impulse);
         }
         else
         {
             playerRB.AddRelativeForceX(
-    moveDirection.x * playerSpeed * airFrictionMultiplier, ForceMode2D.Impulse);
+                moveDirection.x * playerSpeed * airFrictionMultiplier, ForceMode2D.Impulse);
+
         }
 
         if(moveDown)
@@ -215,7 +242,7 @@ public class Player_Controller : MonoBehaviour
         // Keep players speed within maximum speed
         if(playerRB.linearVelocityX > maxSpeed)
         {
-            playerRB.linearVelocityX =  maxSpeed;   
+            playerRB.linearVelocityX = maxSpeed;   
         }
         else if(playerRB.linearVelocityX < -maxSpeed)
         {
@@ -223,11 +250,10 @@ public class Player_Controller : MonoBehaviour
         }
         
         // Jump if jump key was pressed and player is on ground. 
-        if (jump && jumpsLeft > 0)
+        if ((jump || playerWantsToJump) && jumpsLeft > 0)
         {
             playerRB.linearVelocityY = 0; 
             playerRB.AddRelativeForceY(jumpForce, ForceMode2D.Impulse);
-            grounded = false;
             jumpsLeft--;
         }
 
@@ -242,52 +268,83 @@ public class Player_Controller : MonoBehaviour
         {
             gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
             faceRight = false;
-            Debug.Log("Flipped character to face left");
         }
         else if (!faceRight && moveDirection.x == 1)
         {
             gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
             faceRight = true;
-            Debug.Log("Flipped character to face right");
+        }
+
+        if(playerRB.linearVelocityY < 0.1f && !isOnSlope)
+        {
+            playerRB.linearVelocity += Vector2.up * Physics2D.gravity.y * fallMultiplier * Time.deltaTime;
         }
 
     }
 
-    private void CheckGround()
+    //private void CheckSlope()
+    //{
+    //    // Check Front
+    //    float direction = (faceRight) ? 1 : -1;
+    //    RaycastHit2D hit = Physics2D.Raycast(slopeCheckFront.position, Vector2.right * direction, slopeCheckRadius, groundLayer);
+    //    if (hit)
+    //    {
+    //        Vector2 normal = hit.normal;
+    //        slopeAngle = Vector2.Angle(normal, Vector2.up);
+    //        if (slopeAngle > minSlopeAngle && slopeAngle < maxSlopeAngle)
+    //        {
+    //            ascendingSlope = true;
+    //            descendingSlope = false;
+    //            isOnSlope = true;
+    //            return;
+    //        }
+    //    }
+    //    // Check rear
+    //    hit = Physics2D.Raycast(slopeCheckRear.position, Vector2.down, slopeCheckRadius, groundLayer);
+    //    if(hit)
+    //    {
+
+    //        Vector2 normal = hit.normal;
+    //        slopeAngle = Vector2.Angle(normal, Vector2.up); 
+    //        if(slopeAngle > minSlopeAngle && slopeAngle < maxSlopeAngle)
+    //        {
+    //            ascendingSlope = false;
+    //            descendingSlope = true;
+    //            isOnSlope = true;
+    //            return;
+    //        }
+    //    }
+    //    ascendingSlope = false;
+    //    descendingSlope = false;
+    //    isOnSlope = false;
+    //}
+
+    private Vector2 AdjustVelocityToSlope(Vector2 velocity) 
     {
 
-
-        // Check box under player for ground - if found, we are standing on ground
-        if(Physics2D.BoxCast(groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer))
+        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, slopeCheckRadius, groundLayer);
+        if(hit)
         {
-            grounded = true;
-        } else
-        {
-            grounded= false; 
+            var SlopeRotation = Quaternion.FromToRotation(Vector2.up, hit.normal);
+            var adjustedVelocity = SlopeRotation * velocity;
+            if(adjustedVelocity.y < 0 )
+            {
+                return adjustedVelocity;
+            }
         }
-    }  
+        return velocity;
+    
+    }
+    
+
     private void Dash()
     {
         dashing = true;
-        playerRB.AddRelativeForceX(moveDirection.x * dashSpeed, ForceMode2D.Impulse);
+        playerRB.AddRelativeForce(moveDirection * dashSpeed, ForceMode2D.Impulse);
         dashCooldown.StartCooldown();
         canDash = false;
-        playerRB.gravityScale = 0;
-        playerRB.linearVelocityY = 0;
-    }
 
-    private void FlipTransform()
-    {
-        if(faceRight && moveDirection.x == -1)
-        {
-            gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
-            faceRight = false;
-        }
-        else if (!faceRight && moveDirection.x == 1) 
-        {
-            gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            faceRight = true;
-        }
+        
     }
 
     private IEnumerator DisablePlayerCollider(float time)
@@ -303,19 +360,38 @@ public class Player_Controller : MonoBehaviour
 
         playerRB.AddRelativeForceX(-knockback, ForceMode2D.Impulse);
         playerRB.AddRelativeForceY(knockback, ForceMode2D.Impulse);
-        Debug.Log("Player knocked");
-
-
     }
 
-
-
-    private void OnDrawGizmos()
+    public void PreserveMomentumOnLanding()
     {
-        Gizmos.DrawWireCube(groundCheck.position - transform.up * groundCheckRadius, boxSize);
+        Debug.Log("Movement preserved");
+        playerRB.linearVelocityX = lastVelocity.x;
+    }
+
+    private IEnumerator HoldJump(float time)
+    {
+        playerWantsToJump = true;
+        yield return new WaitForSeconds(time);
+        playerWantsToJump = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Landing");
+        if (collision == null) return;
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")) 
+        {
+            
+            if(lastVelocity.y < -1)
+            {
+                PreserveMomentumOnLanding();
+            }
+        }
     }
 
 }
+
+
     
 public class Cooldown
 { 
@@ -328,5 +404,6 @@ public class Cooldown
     private float _nextAbilityTime;
 
     public bool isOnCooldown => Time.time < _nextAbilityTime;
+
     public void StartCooldown() => _nextAbilityTime = Time.time + cooldownTime;
 }

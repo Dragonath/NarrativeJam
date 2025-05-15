@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &816384986442352162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5832845381631469005}
+  m_Layer: 2
+  m_Name: SlopeCheckRear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5832845381631469005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816384986442352162}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.41, y: -1.002, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7856122199337316976}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1705551973750708276
 GameObject:
   m_ObjectHideFlags: 0
@@ -35,6 +66,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1914395793123432756}
+  - {fileID: 8146929624418552425}
+  - {fileID: 5832845381631469005}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &457728839589209139
@@ -52,23 +85,34 @@ MonoBehaviour:
   playerRB: {fileID: 0}
   playerCollider: {fileID: 0}
   groundCheck: {fileID: 1914395793123432756}
+  slopeCheckFront: {fileID: 8146929624418552425}
+  slopeCheckRear: {fileID: 5832845381631469005}
   maxHealth: 3
   currentHealth: 3
   maxJumpCount: 1
-  playerSpeed: 3
-  maxSpeed: 5
-  jumpForce: 17
-  dashSpeed: 25
+  playerSpeed: 10
+  maxSpeed: 6
+  jumpForce: 15
+  dashSpeed: 15
   dashTime: 0
   maxDashTime: 0.4
   airFrictionMultiplier: 0.05
   groundCheckRadius: 0.02
+  slopeCheckRadius: 0.24
   pushValue: 2
+  jumpsLeft: 0
+  slopeAngle: 0
+  maxSlopeAngle: 70
+  minSlopeAngle: 10
+  fallMultiplier: 1.25
   _debug: 1
   grounded: 1
   canDash: 0
   dashing: 0
   playerHasControl: 1
+  isOnSlope: 0
+  ascendingSlope: 0
+  descendingSlope: 0
   dashUnlocked: 0
   runUnlocked: 0
   jumpUnlocked: 1
@@ -79,7 +123,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 0
-  boxSize: {x: 0.8, y: 0.03}
+  boxSize: {x: 1.03, y: 0.03}
   PlayerSpeedX: {x: 0, y: 0}
 --- !u!212 &1051988535004059246
 SpriteRenderer:
@@ -125,12 +169,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -7942040870257615215, guid: 3016e4271fc3aad47bfc23dbbb38c053, type: 3}
+  m_Sprite: {fileID: -4398183398628465896, guid: d652faa8f10faa749af211cc5da6cf84, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.0625, y: 2.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -170,18 +214,18 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.12740195, y: -0.35856175}
+  m_Offset: {x: -0.0053171515, y: -0.19910419}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.3125, y: 2.4375}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.0625, y: 2.125}
+    newSize: {x: 1.0625, y: 2.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.8168299, y: 1.7203765}
-  m_EdgeRadius: 0
+  m_Size: {x: 0.74208415, y: 1.4612579}
+  m_EdgeRadius: 0.14
 --- !u!50 &2903565161919527520
 Rigidbody2D:
   serializedVersion: 5
@@ -197,7 +241,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0.3
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -219,7 +263,7 @@ Animator:
   m_GameObject: {fileID: 1705551973750708276}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 08f52acefcbe6604a953f5e54e2ee420, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -231,6 +275,37 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1763808945923675895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8146929624418552425}
+  m_Layer: 2
+  m_Name: SlopeCheckFront
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8146929624418552425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763808945923675895}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.348, y: -1.061, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7856122199337316976}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3858161665714943996
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,7 +331,7 @@ Transform:
   m_GameObject: {fileID: 3858161665714943996}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.131, y: -1.212, z: 0}
+  m_LocalPosition: {x: -0.0015, y: -1.0605, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
