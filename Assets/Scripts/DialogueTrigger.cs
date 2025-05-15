@@ -4,6 +4,7 @@ public class DialogueTrigger : MonoBehaviour
 {
     public GameObject triggerBox2D;
     public GameObject textBox;
+    public GameObject VFX;
 
     public int dialogueIndex;
     public bool playerInTrigger = false;
@@ -25,6 +26,7 @@ public class DialogueTrigger : MonoBehaviour
         }
         else if (playerInTrigger && !GameManager.instance.inDialogue && dialogueStarted)
         {
+            Instantiate(VFX, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }

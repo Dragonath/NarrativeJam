@@ -3,6 +3,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 class PlayerData
@@ -53,10 +54,11 @@ public class SaveAndLoad : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!GameManager.instance.paused && !updateCD)
+        if (!GameManager.instance.paused && !updateCD && Player_Controller.instance != null)
         {
             updateCD = true;
             StartCoroutine(UpdateCD());
+            _currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
 
             // Update the player stats
             Player_Controller.instance.dashUnlocked = _dashUnlocked;
