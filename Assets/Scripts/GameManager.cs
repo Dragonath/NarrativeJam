@@ -28,11 +28,13 @@ public class GameManager : MonoBehaviour
     public bool pauseActive = false;
     public CanvasGroup sceneTransition;
     public bool inDialogue = false;
+    public bool inStory = false; // Flag to check if the player is in a story dialogue
 
     InputAction menuAction;
     InputAction interactAction;
 
     private Dialogue dialogue; // Reference to the Dialogue component for managing story dialogues
+    public StoryDialogue storyDialogue; // Reference to the StoryDialogue component for managing story dialogues
     private int currentStoryIndex = 0; // Index of the current story being played
     private bool inTrigger = false; // Flag to check if the player is in a trigger area
 
@@ -89,6 +91,7 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(InputCooldown()); // Start the input cooldown coroutine
                 if (!paused)
                 {
+                    Player_Controller.instance.playerHasControl = false; // Disable player control
                     pauseActive = true;
                     pauseMenu.SetActive(true); // Activate the pause menu
                     StartCoroutine(FadeMenuIn()); // Start fading in the pause menu
@@ -98,6 +101,7 @@ public class GameManager : MonoBehaviour
                     pauseActive = true;
                     Time.timeScale = 1;
                     StartCoroutine(FadeMenuOut());
+                    Player_Controller.instance.playerHasControl = true; // Enable player control
                 }
             }
 
@@ -125,9 +129,23 @@ public class GameManager : MonoBehaviour
                         dialogue.skip = true;
                     }
                 }
+                else if (storyDialogue != null)
+                {
+                    if (inStory && !storyDialogue.choiceGiven)
+                    {
+                        if (!storyDialogue.isTyping)
+                        {
+                            storyDialogue.PlayStory();
+                        }
+                        else if (storyDialogue.isTyping)
+                        {
+                            storyDialogue.skip = true;
+                        }
+                    }
+                }
                 else
                 {
-                    // INTERACT !
+                    // INTERACT
                 }
             }
         }
@@ -187,7 +205,7 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(index);
         SceneManager.LoadSceneAsync(index + 1);
     }
-    public void LoadScene(int index, Vector3 playerPos)
+    public void LoadScene(int index, Vector2 playerPos)
     {
         StartCoroutine(SceneFadeIn());
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
@@ -237,6 +255,7 @@ public class GameManager : MonoBehaviour
 
     public void BeginStory(int dialogueIndex)
     {
+        Player_Controller.instance.playerHasControl = false; // Disable player input
         dialogueMenu.SetActive(true);
         inDialogue = true;
         dialogue.StartStory(dialogueIndex);
@@ -244,6 +263,7 @@ public class GameManager : MonoBehaviour
 
     public void EndStory()
     {
+        Player_Controller.instance.playerHasControl = true; // Enable player input
         dialogueMenu.SetActive(false);
         inDialogue = false;
     }

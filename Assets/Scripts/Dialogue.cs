@@ -73,7 +73,11 @@ public class Dialogue : MonoBehaviour
             // Display the text on screen!
             StartCoroutine(TypeLine(text));
         }
-        else if (story.currentChoices.Count > 0)
+        else if (!story.canContinue && story.currentChoices.Count <= 0)
+        {
+            GameManager.instance.EndStory();
+        }
+        if (story.currentChoices.Count > 0)
         {
             buttonGroup.alpha = 0;
             for (int i = 0; i < story.currentChoices.Count; ++i)
@@ -87,10 +91,6 @@ public class Dialogue : MonoBehaviour
             }
             StartCoroutine(ButtonFadeIn());
             choiceGiven = true;
-        }
-        else if (!story.canContinue && story.currentChoices.Count <= 0)
-        {
-            GameManager.instance.EndStory();
         }
     }
 
