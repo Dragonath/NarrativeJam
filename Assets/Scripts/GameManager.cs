@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(index);
         SceneManager.LoadSceneAsync(index + 1);
     }
-    public void LoadScene(int index, Vector3 playerPos)
+    public void LoadScene(int index, Vector2 playerPos)
     {
         StartCoroutine(SceneFadeIn());
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
@@ -253,6 +253,7 @@ public class GameManager : MonoBehaviour
 
     public void BeginStory(int dialogueIndex)
     {
+        Player_Controller.instance.playerHasControl = false; // Disable player input
         dialogueMenu.SetActive(true);
         inDialogue = true;
         dialogue.StartStory(dialogueIndex);
@@ -260,6 +261,7 @@ public class GameManager : MonoBehaviour
 
     public void EndStory()
     {
+        Player_Controller.instance.playerHasControl = true; // Enable player input
         dialogueMenu.SetActive(false);
         inDialogue = false;
     }
