@@ -6,6 +6,8 @@ public class DialogueTrigger : MonoBehaviour
     public GameObject textBox;
 
     public int dialogueIndex;
+    public bool playerInTrigger = false;
+    public bool dialogueStarted = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,7 +18,12 @@ public class DialogueTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (triggerBox2D.GetComponent<Collider2D>().IsTouchingLayers(LayerMask.GetMask("Player")) && GameManager.instance.inDialogue)
+        if (playerInTrigger && GameManager.instance.inDialogue)
+        {
+            textBox.SetActive(false);
+            dialogueStarted = true;
+        }
+        else if (playerInTrigger && !GameManager.instance.inDialogue && dialogueStarted)
         {
             Destroy(gameObject);
         }
@@ -26,6 +33,7 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            playerInTrigger = true;
             textBox.SetActive(true);
             GameManager.instance.OpenStory(dialogueIndex);
         }
@@ -35,8 +43,10 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            playerInTrigger = false;
             textBox.SetActive(false);
             GameManager.instance.CloseStory();
         }
     }
+
 }
