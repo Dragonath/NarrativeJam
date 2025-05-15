@@ -1,69 +1,93 @@
 using System.Collections;
-using System.Threading;
-using Unity.Mathematics;
+using System.Net;
 using Unity.VisualScripting;
+using Unity.VisualScripting.ReorderableList;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+
 
 public class Player_Controller : MonoBehaviour
 {
-    // Components
-    public Rigidbody2D playerRB;
-    public Collider2D playerCollider;
+    // -- PUBLIC -- // 
+
+    [Header("Components")]
+    public Rigidbody2D rb;
+    public BoxCollider2D boxCollider;
     public Transform groundCheck;
-    
-    // Numeric variables
+    public Animator animator;
+
+    [Header("Speeds")]
+    // Track player velocity
+    public Vector2 playerVelocity;
+
+    public float maxSpeed;
+    public float moveSpeed;
+    public float jumpSpeed;
+    public float dashSpeed;
+    public float wallSlidingSpeed;
+
+    [Header("Times")]
+    public float dashTime;
+    public float inputHoldTime;
+    public float wallJumpTime;
+
+    [Header("Air Friction Multiplier")]
+    public float airFriction;
+
+    [Header("Player stat")]
     public int maxHealth;
     public int currentHealth;
-    public int maxJumpCount;
-    public float playerSpeed;
-    public float maxSpeed;
-    public float jumpForce;
-    public float dashSpeed;
-    public float dashTime;
-    public float maxDashTime;
-    public Cooldown dashCooldown;
-    public float airFrictionMultiplier;
-    public float groundCheckRadius;
-    public float pushValue;
-    public float jumpsLeft;
-    
-    // Booleans
-    public bool _debug;
-    public bool grounded;
-    public bool canDash;
-    public bool dashing;
-    public bool playerHasControl;
-    private bool dead;
+    public float maxJumps;
 
-    // Unlocks
+    [Header("Radiuses")]
+    public float groundCheckRadius;
+    public float wallCheckRadius;
+
+    [Header("Booleans")]
+    public bool grounded;
+    public bool isOnSlope;
+    public bool isOnWall;
+    public bool isDashing;
+    public bool isJumping;
+    public bool DEBUG;
+    public bool playerHasControl;
+    public bool playerWantsToJump;
+
+    [Header("Layer Mask")]
+    public LayerMask groundLayer;
+
+    [Header("Vectors")]
+    public Vector2 boxSize;
+    public Vector2 moveDirection;
+
+    // -- PRIVATE -- // 
+    private float jumpsLeft;
+    private int wallJumpDirection;
+    private float wallJumpCounter;
+    private bool jump;
+    private bool dash;
+    private bool moveDown;
+    private bool facingRight;
+
+
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction dashAction;
+
+    private Vector2 lastVelocity;
+    private Cooldown dashCooldown;
+    private HoldInput jumpHold;
+
+    [Header("Unlocks")]
     public bool dashUnlocked;
     public bool runUnlocked;
     public bool jumpUnlocked;
     public bool walkUnlocked;
 
-    // LayerMasks
-    public LayerMask groundLayer;
-    public LayerMask enemyLayer;
-
-    public Vector2 boxSize;
-    private Vector2 moveDirection;
-    private bool jump;
-    private bool dash;
-    private bool moveDown; 
-    private bool faceRight = true;
-
-    // Input Actions
-    InputAction moveAction;
-    InputAction jumpAction;
-    InputAction dashAction;
-    
-
-    // Reference to players velocity on X-axis so we can track it in inspector
-    public Vector2 PlayerSpeedX;
-
-    public static Player_Controller instance; // Static instance of the Player_Controller class
-
+    public static Player_Controller instance;
     void Awake()
     {
         // Check if an instance of SoundManager already exists
@@ -81,252 +105,321 @@ public class Player_Controller : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Get references for Input actions
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
         dashAction = InputSystem.actions.FindAction("Dash");
 
-        // Get references to required compontent and make sure player's collider is enabled. 
-        playerRB = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<Collider2D>();
-        groundCheck = transform.Find("GroundCheck");
-        playerCollider.enabled = true;
-        playerHasControl = true;
-
-        // probably move somewhere else. 
-        dashCooldown = new Cooldown(4f);
+        dashCooldown = new Cooldown(2f);
+        jumpHold = new HoldInput(inputHoldTime);
     }
-
 
     // Update is called once per frame
     void Update()
     {
-        // for tracking player speed in inspector
-        PlayerSpeedX = playerRB.linearVelocity;
-
-        // Check if player is grounded, if yes reset remaining jumps
-        grounded = Physics2D.BoxCast(groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer);
-        if(grounded)
+        if (isDashing || !playerHasControl || !walkUnlocked)
         {
-            jumpsLeft = maxJumpCount;
+            return;
         }
 
-        // Get pressed inputs if player has controls and is not dashing 
-        if (playerHasControl && !dashing)
+        if (DEBUG)
         {
-            GetInputs();
+
         }
 
-        if (_debug)
-        {
-            Debug.Log(moveDirection);
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckRadius);
-        }
-        // Check when dashing should be over
-        if(dashing)
-        {
-            dashTime += Time.deltaTime;
-            if(dashTime >= maxDashTime)
-            {
-                dashing = false;
-                dashTime = 0;
-                playerRB.gravityScale = 1;
-            }
-        }
-        
-        // Check if next dash is available 
-        if (!canDash)
-        {
-            if (!dashCooldown.isOnCooldown) 
-            {
-                canDash = true;
-            }
-        }
-    }
+        // Track player velocity in Inspector
+        playerVelocity = rb.linearVelocity;
+        // Store old velocity
+        lastVelocity = rb.linearVelocity;
+        animator.SetFloat("Velocity_Y", rb.linearVelocityY);
 
-    private void GetInputs()
-    {
+        // Player input is checked 
         moveDirection = moveAction.ReadValue<Vector2>();
-        
-        if(moveDirection.y == -1.0f)
+        if (moveDirection.y < -0.2f)
         {
-            Debug.Log("Go down");
             moveDown = true;
         }
-        if (jumpAction.IsPressed())
+
+        // Check if player is standing on ground
+        grounded = Physics2D.BoxCast
+            (groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer);
+
+        // reset jumps if player is on ground
+        if (grounded)
         {
-            jump = true;
+            isJumping = false;
+            jumpsLeft = maxJumps;
         }
-        if (dashAction.WasPressedThisFrame())
+
+        // Check for dash imput and if dash is on cooldown. Player cannot dash while giving no input
+        if (dashAction.WasPressedThisFrame() && dashUnlocked)
         {
+
             dash = true;
         }
 
+        // check for jump input
+        if (jumpAction.WasPressedThisFrame() && jumpUnlocked)
+        {
+            jump = true;
+            playerWantsToJump = true;
+            jumpHold.StartHold();
+        }
+
+        if (!jumpHold.isOnHold)
+        {
+            playerWantsToJump = false;
+        }
+
+        CheckWall();
+        SetAnimation();
+        jump = false;
     }
 
     private void FixedUpdate()
     {
-       // CheckGround();
-        MoveCharacter();
-
-        // Reset Variables
-        if (!dashing)
-        {
-            moveDirection = Vector2.zero;
-        }
-
-        moveDown = false;
-        jump = false;
-        dash = false;
-    }
-
-    private void MoveCharacter()
-    {
-        // Limit all controls for dash duration
-        if(dashing)
+        if (isDashing || !playerHasControl)
         {
             return;
         }
-        // normal movement if player is on ground. On air we want to limit controls
-        if(grounded)
+
+        MovePlayer();
+        // Reset inputs if necessary
+        jump = false;
+        dash = false;
+        moveDown = false;
+
+    }
+
+    private void MovePlayer()
+    {
+        // Apply movement
+        if (grounded)
         {
-        playerRB.AddRelativeForceX(
-            moveDirection.x * playerSpeed, ForceMode2D.Impulse);
+            rb.AddForceX(moveDirection.x * moveSpeed, ForceMode2D.Impulse);
         }
         else
         {
-            playerRB.AddRelativeForceX(
-    moveDirection.x * playerSpeed * airFrictionMultiplier, ForceMode2D.Impulse);
+            rb.AddForceX(moveDirection.x * moveSpeed * airFriction, ForceMode2D.Impulse);
         }
-
-        if(moveDown)
+        //  players speed within maximum speed
+        if (rb.linearVelocityX > maxSpeed)
         {
-            Collider2D col = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-            if (col != null)
+            rb.linearVelocityX = maxSpeed;
+        }
+        else if (rb.linearVelocityX < -maxSpeed)
+        {
+            rb.linearVelocityX = -maxSpeed;
+        }
+        // Flip character model
+        FlipCharacter();
+
+        if (moveDown)
+        {
+            RaycastHit2D col = Physics2D.BoxCast
+            (groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer);
+            if (col)
             {
-                if(col.CompareTag("Platform"))
+                if (col.transform.CompareTag("Platform"))
                 {
                     StartCoroutine(DisablePlayerCollider(0.5f));
-                    playerRB.AddRelativeForceY(moveDirection.y * pushValue, ForceMode2D.Impulse);
+                    rb.AddRelativeForceY(moveDirection.y * 5, ForceMode2D.Impulse);
                 }
             }
         }
 
-        // Keep players speed within maximum speed
-        if(playerRB.linearVelocityX > maxSpeed)
-        {
-            playerRB.linearVelocityX =  maxSpeed;   
-        }
-        else if(playerRB.linearVelocityX < -maxSpeed)
-        {
-            playerRB.linearVelocityX = -maxSpeed;
-        }
-        
-        // Jump if jump key was pressed and player is on ground. 
-        if (jump && jumpsLeft > 0)
-        {
-            playerRB.linearVelocityY = 0; 
-            playerRB.AddRelativeForceY(jumpForce, ForceMode2D.Impulse);
-            grounded = false;
-            jumpsLeft--;
-        }
+        // Dash
+        if (dash && moveDirection != Vector2.zero) StartCoroutine(Dash());
 
-        // Dash if dash key was pressed, player is pressing directional key (left or right) and player can dash. Player cannot dash while standing still.
-        if (dash && moveDirection != Vector2.zero && canDash)
-        {
-            Dash();
-        }
+        // Jump
+        if (jump || playerWantsToJump) Jump();
 
-        // Rotate player depending where players is trying to go.
-        if (faceRight && moveDirection.x == -1)
-        {
-            gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
-            faceRight = false;
-            Debug.Log("Flipped character to face left");
-        }
-        else if (!faceRight && moveDirection.x == 1)
-        {
-            gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            faceRight = true;
-            Debug.Log("Flipped character to face right");
-        }
 
     }
 
-    private void CheckGround()
+    private void CheckWall()
     {
+        float direction = (facingRight) ? 1 : -1;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right * direction, wallCheckRadius, groundLayer);
+        Debug.DrawRay(transform.position, Vector2.right * direction * wallCheckRadius, Color.red);
 
-
-        // Check box under player for ground - if found, we are standing on ground
-        if(Physics2D.BoxCast(groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer))
+        if (hit.normal.x == -direction && !grounded && moveDirection.x == direction)
         {
-            grounded = true;
-        } else
-        {
-            grounded= false; 
+            // wall slide
+            wallJumpCounter = wallJumpTime;
+            wallJumpDirection = (int)hit.normal.x;
+            rb.linearVelocityY = Mathf.Clamp(rb.linearVelocityY, -wallSlidingSpeed, float.MaxValue);
+            isOnWall = true;
+            jumpsLeft = maxJumps;
         }
-    }  
-    private void Dash()
+        else
+        {
+            wallJumpCounter -= Time.deltaTime;
+            if (wallJumpCounter < 0)
+            {
+                isOnWall = false;
+            }
+        }
+    }
+
+    private void SetAnimation()
     {
-        dashing = true;
-        playerRB.AddRelativeForceX(moveDirection.x * dashSpeed, ForceMode2D.Impulse);
+        if (playerVelocity == Vector2.zero && grounded)
+        {
+            animator.Play("Idle");
+            Debug.Log("Idle Animation");
+
+        }
+        if (moveDirection.x != 0 && grounded)
+        {
+            animator.Play("Walk");
+            Debug.Log("Walk Animation");
+        }
+        if(isJumping)
+        {
+            animator.Play("Jump");
+        }
+    }
+
+    private IEnumerator Dash()
+    {
+        isDashing = true;
+        var t_gravity = rb.gravityScale;
+        rb.gravityScale = 0;
+        rb.linearVelocity = Vector2.zero;
+        rb.AddRelativeForce(moveDirection * dashSpeed, ForceMode2D.Impulse);
         dashCooldown.StartCooldown();
-        canDash = false;
-        playerRB.gravityScale = 0;
-        playerRB.linearVelocityY = 0;
+        yield return new WaitForSeconds(dashTime);
+        isDashing = false;
+        rb.gravityScale = t_gravity;
+
     }
 
-    private void FlipTransform()
+    private void FlipCharacter()
     {
-        if(faceRight && moveDirection.x == -1)
+        // Rotate player depending where players is trying to go.
+        if (facingRight && moveDirection.x == -1)
         {
             gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
-            faceRight = false;
+            facingRight = false;
         }
-        else if (!faceRight && moveDirection.x == 1) 
+        else if (!facingRight && moveDirection.x == 1)
         {
             gameObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            faceRight = true;
+            facingRight = true;
         }
     }
 
+    private void Jump()
+    {
+        Debug.Log("Jump");
+        if (jumpsLeft > 0)
+        {
+            isJumping = true;
+            rb.linearVelocityY = 0;
+            switch (isOnWall)
+            {
+                case true:
+                    rb.AddForce(new Vector2(jumpSpeed * wallJumpDirection, jumpSpeed), ForceMode2D.Impulse);
+                    wallJumpCounter = 0;
+                    break;
+                case false:
+                    rb.AddForceY(jumpSpeed, ForceMode2D.Impulse);
+                    break;
+            }
+
+        }
+        jumpsLeft--;
+        jumpHold.StopHold();
+    }
     private IEnumerator DisablePlayerCollider(float time)
     {
-        playerCollider.enabled = false;
+        boxCollider.enabled = false;
         yield return new WaitForSeconds(time);
-        playerCollider.enabled = true;
+        boxCollider.enabled = true;
+        moveDown = false;
     }
 
     public void Knock(float knockback)
     {
-        playerRB.linearVelocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
 
-        playerRB.AddRelativeForceX(-knockback, ForceMode2D.Impulse);
-        playerRB.AddRelativeForceY(knockback, ForceMode2D.Impulse);
-        Debug.Log("Player knocked");
-
-
+        rb.AddRelativeForceX(-knockback, ForceMode2D.Impulse);
+        rb.AddRelativeForceY(knockback, ForceMode2D.Impulse);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Landing");
+        if (collision == null) return;
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
 
+            if (lastVelocity.y < -1)
+            {
+                PreserveMomentumOnLanding();
+            }
+        }
+    }
+
+    public void PreserveMomentumOnLanding()
+    {
+        Debug.Log("Movement preserved");
+        rb.linearVelocityX = lastVelocity.x;
+    }
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(groundCheck.position - transform.up * groundCheckRadius, boxSize);
+        int direction = (facingRight) ? 1 : -1;
+        Debug.DrawRay(transform.position, Vector2.right * direction * wallCheckRadius, Color.red);
+        Gizmos.DrawWireCube(groundCheck.position, boxSize);
     }
 
 }
-    
+
 public class Cooldown
-{ 
+{
     /// <param name="n">Numeric value of the cooldown</param>
     public Cooldown(float n)
     {
         cooldownTime = n;
     }
     [SerializeField] private float cooldownTime;
-    private float _nextAbilityTime;
+    private float _nextAbilityTime = 0;
 
     public bool isOnCooldown => Time.time < _nextAbilityTime;
     public void StartCooldown() => _nextAbilityTime = Time.time + cooldownTime;
+}
+
+public static class Vector2Extensiom
+{
+    public static Vector2 Rotate(this Vector2 vector, float degrees)
+    {
+        float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
+        float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
+
+        float tx = vector.x;
+        float ty = vector.y;
+
+        vector.x = (cos * tx) - (sin * tx);
+        vector.y = (sin * tx) + (cos * tx);
+
+        return vector;
+    }
+}
+
+public class HoldInput
+{
+    public HoldInput(float t)
+    {
+        holdTime = t;
+    }
+    private float holdTime;
+    private float _nextInputTime = 0;
+
+    public bool isOnHold => Time.time < _nextInputTime;
+    public void StartHold() => _nextInputTime = Time.time + holdTime;
+    public void StopHold() => _nextInputTime = 0;
 }

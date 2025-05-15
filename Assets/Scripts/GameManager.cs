@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(index);
         if (playerPos != null)
-            Player_Controller.instance.playerRB.position = playerPos;
+            Player_Controller.instance.rb.position = playerPos;
     }
 
 

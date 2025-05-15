@@ -8,7 +8,7 @@ PhysicsMaterial2D:
   m_PrefabAsset: {fileID: 0}
   m_Name: GroundMaterial
   serializedVersion: 2
-  friction: 9.4
+  friction: 6
   bounciness: 0
-  m_FrictionCombine: 4
+  m_FrictionCombine: 0
   m_BounceCombine: 4
