@@ -28,11 +28,13 @@ public class GameManager : MonoBehaviour
     public bool pauseActive = false;
     public CanvasGroup sceneTransition;
     public bool inDialogue = false;
+    public bool inStory = false; // Flag to check if the player is in a story dialogue
 
     InputAction menuAction;
     InputAction interactAction;
 
     private Dialogue dialogue; // Reference to the Dialogue component for managing story dialogues
+    public StoryDialogue storyDialogue; // Reference to the StoryDialogue component for managing story dialogues
     private int currentStoryIndex = 0; // Index of the current story being played
     private bool inTrigger = false; // Flag to check if the player is in a trigger area
 
@@ -125,9 +127,23 @@ public class GameManager : MonoBehaviour
                         dialogue.skip = true;
                     }
                 }
+                else if (storyDialogue != null)
+                {
+                    if (inStory && !storyDialogue.choiceGiven)
+                    {
+                        if (!storyDialogue.isTyping)
+                        {
+                            storyDialogue.PlayStory();
+                        }
+                        else if (storyDialogue.isTyping)
+                        {
+                            storyDialogue.skip = true;
+                        }
+                    }
+                }
                 else
                 {
-                    // INTERACT !
+                    // INTERACT
                 }
             }
         }
