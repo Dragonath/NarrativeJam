@@ -115,7 +115,6 @@ public class GameManager : MonoBehaviour
                 if (inTrigger && !inDialogue)
                 {
                     inTrigger = false; // Reset the trigger flag
-                    dialogueMenu.SetActive(true); // Activate the dialogue menu
                     BeginStory(currentStoryIndex); // Start the story with the current index
                 }
                 else if (inDialogue && !dialogue.choiceGiven)
@@ -205,13 +204,11 @@ public class GameManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(index);
         SceneManager.LoadSceneAsync(index + 1);
     }
-    public void LoadScene(int index, Vector2 playerPos)
+    public void LoadScene(int index)
     {
         StartCoroutine(SceneFadeIn());
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(index);
-        if (playerPos != null)
-            Player_Controller.instance.rb.position = playerPos;
     }
 
 
@@ -256,9 +253,8 @@ public class GameManager : MonoBehaviour
     public void BeginStory(int dialogueIndex)
     {
         Player_Controller.instance.playerHasControl = false; // Disable player input
-        dialogueMenu.SetActive(true);
         inDialogue = true;
-        dialogue.StartStory(dialogueIndex);
+        StartCoroutine(WaitForLoad(dialogueIndex));
     }
 
     public void EndStory()
@@ -286,5 +282,10 @@ public class GameManager : MonoBehaviour
         Player_Controller.instance.currentHealth -= damage;
     }
 
-
+    IEnumerator WaitForLoad(int index)
+    {
+        yield return new WaitForSeconds(0.5f);
+        dialogueMenu.SetActive(true);
+        dialogue.StartStory(index);
+    }
 }
