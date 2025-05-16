@@ -18,6 +18,9 @@ class PlayerData
     public int playerHealth;
     public int playerMaxHealth;
     public int maxJumpCount;
+    public int lvl1Flag;
+    public int lvl2Flag;
+    public int lvl3Flag;
 }
 
 public class SaveAndLoad : MonoBehaviour
@@ -36,6 +39,9 @@ public class SaveAndLoad : MonoBehaviour
     public int _playerHealth;
     public int _playerMaxHealth;
     public int _maxJumpCount;
+    public int _lvl1Flag;
+    public int _lvl2Flag;
+    public int _lvl3Flag;
 
 
     void Awake()
@@ -96,6 +102,9 @@ public class SaveAndLoad : MonoBehaviour
         data.playerHealth = _playerHealth;
         data.playerMaxHealth = _playerMaxHealth;
         data.maxJumpCount = _maxJumpCount;
+        data.lvl1Flag = _lvl1Flag;
+        data.lvl2Flag = _lvl2Flag;
+        data.lvl3Flag = _lvl3Flag;
 
         bf.Serialize(file, data);
         file.Close();
@@ -118,6 +127,9 @@ public class SaveAndLoad : MonoBehaviour
             _playerHealth = data.playerHealth;
             _playerMaxHealth = data.playerMaxHealth;
             _maxJumpCount = data.maxJumpCount;
+            _lvl1Flag = data.lvl1Flag;
+            _lvl2Flag = data.lvl2Flag;
+            _lvl3Flag = data.lvl3Flag;
             _playerPosition = new Vector2(data.playerPositionX, data.playerPositionY);
             GameManager.instance.LoadScene(_currentLevelIndex, _playerPosition);
         }
@@ -130,6 +142,9 @@ public class SaveAndLoad : MonoBehaviour
             _playerHealth = 10;
             _playerMaxHealth = 10;
             _maxJumpCount = 2;
+            _lvl1Flag = 0;
+            _lvl2Flag = 0;
+            _lvl3Flag = 0;
         }
     }
 
