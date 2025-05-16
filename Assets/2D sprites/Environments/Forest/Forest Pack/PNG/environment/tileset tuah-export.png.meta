@@ -597,7 +597,26 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      tileset tuah-export_0: 8121852296433934644
+      tileset tuah-export_1: 3557233765619636315
+      tileset tuah-export_10: -6381620235183018354
+      tileset tuah-export_11: -237173102600281363
+      tileset tuah-export_12: -8869210963333068877
+      tileset tuah-export_13: 8485118820767705069
+      tileset tuah-export_14: 8282661079355361427
+      tileset tuah-export_15: 9026969471135260090
+      tileset tuah-export_16: -7396018141900168932
+      tileset tuah-export_17: -2565651794641371158
+      tileset tuah-export_18: -4429465981681733723
+      tileset tuah-export_2: 2588280976635978754
+      tileset tuah-export_3: -3288716467884016275
+      tileset tuah-export_4: 5793997435044778760
+      tileset tuah-export_5: 1006941163593803260
+      tileset tuah-export_6: 1099886103039990672
+      tileset tuah-export_7: -8197523627115122347
+      tileset tuah-export_8: 3045454118297183548
+      tileset tuah-export_9: -6586356625943262720
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
