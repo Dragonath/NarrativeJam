@@ -77,6 +77,7 @@ public class Player_Controller : MonoBehaviour
     private InputAction jumpAction;
     private InputAction dashAction;
 
+    private Vector2 dashDecel;
     private Vector2 lastVelocity;
     private Cooldown dashCooldown;
     private HoldInput jumpHold;
@@ -105,9 +106,12 @@ public class Player_Controller : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // get reference for all components
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+
+        // Get reference for player inputs
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
         dashAction = InputSystem.actions.FindAction("Dash");
@@ -119,8 +123,21 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Track player velocity in Inspector
+        playerVelocity = rb.linearVelocity;
+        // Store old velocity
+        lastVelocity = rb.linearVelocity;
+        animator.SetFloat("Velocity_Y", rb.linearVelocityY);
+
+
         if (isDashing || !playerHasControl || !walkUnlocked)
         {
+            if(isDashing)
+            {
+                // Damp player speed during a dash.
+                rb.linearVelocityX = Mathf.SmoothDamp(rb.linearVelocityX, 0, ref dashDecel.x, dashTime);
+                rb.linearVelocityY = Mathf.SmoothDamp(rb.linearVelocityY, 0, ref dashDecel.y, dashTime);
+            }
             return;
         }
 
@@ -128,12 +145,6 @@ public class Player_Controller : MonoBehaviour
         {
 
         }
-
-        // Track player velocity in Inspector
-        playerVelocity = rb.linearVelocity;
-        // Store old velocity
-        lastVelocity = rb.linearVelocity;
-        animator.SetFloat("Velocity_Y", rb.linearVelocityY);
 
         // Player input is checked 
         moveDirection = moveAction.ReadValue<Vector2>();
@@ -167,7 +178,9 @@ public class Player_Controller : MonoBehaviour
             playerWantsToJump = true;
             jumpHold.StartHold();
         }
-
+        // Hold player's jump input for a while, this way jump input doesnt need to be pixel perfect
+        // and player can press jump a bit before he touches the ground
+        // and still be able to jump when player reaches the ground
         if (!jumpHold.isOnHold)
         {
             playerWantsToJump = false;
@@ -180,12 +193,15 @@ public class Player_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // we wanna skip everything if player is dashing or doesnt have control
         if (isDashing || !playerHasControl)
         {
             return;
         }
 
+        // Execute movement
         MovePlayer();
+
         // Reset inputs if necessary
         jump = false;
         dash = false;
@@ -195,7 +211,7 @@ public class Player_Controller : MonoBehaviour
 
     private void MovePlayer()
     {
-        // Apply movement
+        // Apply movement 
         if (grounded)
         {
             rb.AddForceX(moveDirection.x * moveSpeed, ForceMode2D.Impulse);
@@ -204,6 +220,7 @@ public class Player_Controller : MonoBehaviour
         {
             rb.AddForceX(moveDirection.x * moveSpeed * airFriction, ForceMode2D.Impulse);
         }
+
         //  players speed within maximum speed
         if (rb.linearVelocityX > maxSpeed)
         {
@@ -213,9 +230,11 @@ public class Player_Controller : MonoBehaviour
         {
             rb.linearVelocityX = -maxSpeed;
         }
+
         // Flip character model
         FlipCharacter();
 
+        // Lets player drop down from a platform -- Not well tested
         if (moveDown)
         {
             RaycastHit2D col = Physics2D.BoxCast
@@ -238,7 +257,9 @@ public class Player_Controller : MonoBehaviour
 
 
     }
-
+    /// <summary>
+    /// Checks the area directly in front of the player
+    /// </summary>
     private void CheckWall()
     {
         float direction = (facingRight) ? 1 : -1;
@@ -294,7 +315,6 @@ public class Player_Controller : MonoBehaviour
         yield return new WaitForSeconds(dashTime);
         isDashing = false;
         rb.gravityScale = t_gravity;
-
     }
 
     private void FlipCharacter()
@@ -314,7 +334,6 @@ public class Player_Controller : MonoBehaviour
 
     private void Jump()
     {
-        Debug.Log("Jump");
         if (jumpsLeft > 0)
         {
             isJumping = true;
@@ -329,10 +348,9 @@ public class Player_Controller : MonoBehaviour
                     rb.AddForceY(jumpSpeed, ForceMode2D.Impulse);
                     break;
             }
-
+            jumpsLeft--;
+            jumpHold.StopHold();
         }
-        jumpsLeft--;
-        jumpHold.StopHold();
     }
     private IEnumerator DisablePlayerCollider(float time)
     {

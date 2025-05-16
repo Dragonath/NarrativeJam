@@ -59,13 +59,14 @@ MonoBehaviour:
   jumpSpeed: 15
   dashSpeed: 30
   wallSlidingSpeed: 0.3
-  dashTime: 0.3
+  dashTime: 0.15
   inputHoldTime: 0.1
   wallJumpTime: 0.2
+  dashDecel: {x: 0, y: 0}
   airFriction: 0.05
   maxHealth: 3
   currentHealth: 3
-  maxJumps: 1
+  maxJumps: 2
   groundCheckRadius: 0.02
   wallCheckRadius: 0.55
   grounded: 0
@@ -81,10 +82,10 @@ MonoBehaviour:
     m_Bits: 8
   boxSize: {x: 1.03, y: 0.03}
   moveDirection: {x: 0, y: 0}
-  dashUnlocked: 0
-  runUnlocked: 0
-  jumpUnlocked: 0
-  walkUnlocked: 0
+  dashUnlocked: 1
+  runUnlocked: 1
+  jumpUnlocked: 1
+  walkUnlocked: 1
 --- !u!212 &1051988535004059246
 SpriteRenderer:
   m_ObjectHideFlags: 0
