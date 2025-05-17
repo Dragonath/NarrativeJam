@@ -131,7 +131,7 @@ public class SaveAndLoad : MonoBehaviour
             _lvl2Flag = data.lvl2Flag;
             _lvl3Flag = data.lvl3Flag;
             _playerPosition = new Vector2(data.playerPositionX, data.playerPositionY);
-            GameManager.instance.LoadScene(_currentLevelIndex, _playerPosition);
+            GameManager.instance.LoadScene(_currentLevelIndex);
         }
         else 
         { 

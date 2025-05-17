@@ -15,8 +15,6 @@ public class StoryDialogue : MonoBehaviour
     public TMP_Text dialogue;
     public float typingSpeed = 0.05f;
 
-    [SerializeField]
-    private TextAsset inkJSONAsset = null;
     private Story story;
 
     public List<TextAsset> stories;
