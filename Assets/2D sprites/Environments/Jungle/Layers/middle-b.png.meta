@@ -116,12 +116,12 @@ TextureImporter:
       name: middle-b_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 31
         y: 0
-        width: 288
+        width: 128
         height: 240
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,11 +134,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: middle-b_1
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 0
+        width: 128
+        height: 240
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cadd79d745f06c143bccac678b7f1a35
+      internalID: -257902292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d7ec01fc90c2a5b4e8608e32d59a8b64
     internalID: 0
     vertices: []
     indices: 
@@ -146,9 +168,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":2.0,"y":1.0},"gridSpriteSize":{"x":128.0,"y":240.0},"gridSpriteOffset":{"x":31.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":1.0},"autoSlicingMethod":0,"spriteAlignment":1,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       middle-b_0: 4583259145732608838
+      middle-b_1: -257902292
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -67,6 +67,7 @@ public class Player_Controller : MonoBehaviour
     private float jumpsLeft;
     private int wallJumpDirection;
     private float wallJumpCounter;
+    private float normalGravity;
     private bool jump;
     private bool dash;
     private bool moveDown;
@@ -115,6 +116,8 @@ public class Player_Controller : MonoBehaviour
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
         dashAction = InputSystem.actions.FindAction("Dash");
+
+        normalGravity = rb.gravityScale;
 
         dashCooldown = new Cooldown(2f);
         jumpHold = new HoldInput(inputHoldTime);
@@ -287,6 +290,11 @@ public class Player_Controller : MonoBehaviour
 
     private void SetAnimation()
     {
+        if(isDashing)
+        {
+            return;
+        }
+
         if (playerVelocity == Vector2.zero && grounded)
         {
             animator.Play("Idle");
@@ -306,15 +314,21 @@ public class Player_Controller : MonoBehaviour
 
     private IEnumerator Dash()
     {
+        animator.Play("Dash_Start");
         isDashing = true;
-        var t_gravity = rb.gravityScale;
         rb.gravityScale = 0;
         rb.linearVelocity = Vector2.zero;
         rb.AddRelativeForce(moveDirection * dashSpeed, ForceMode2D.Impulse);
         dashCooldown.StartCooldown();
         yield return new WaitForSeconds(dashTime);
+        animator.Play("Dash_End");
+
+    }
+
+    public void DashFinished()
+    {
         isDashing = false;
-        rb.gravityScale = t_gravity;
+        rb.gravityScale = normalGravity;
     }
 
     private void FlipCharacter()
