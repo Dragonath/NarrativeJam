@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class DialogueTrigger : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class DialogueTrigger : MonoBehaviour
     public int dialogueIndex;
     public bool playerInTrigger = false;
     public bool dialogueStarted = false;
+    private bool noretry = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,10 +21,11 @@ public class DialogueTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerInTrigger && GameManager.instance.inDialogue)
+        if (playerInTrigger && GameManager.instance.inDialogue && !noretry)
         {
             textBox.SetActive(false);
-            dialogueStarted = true;
+            noretry = true;
+            StartCoroutine(WaitLoading());
         }
         else if (playerInTrigger && !GameManager.instance.inDialogue && dialogueStarted)
         {
@@ -51,4 +54,9 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
+    IEnumerator WaitLoading()
+    {
+        yield return new WaitForSeconds(0.6f);
+        dialogueStarted = true;
+    }
 }
