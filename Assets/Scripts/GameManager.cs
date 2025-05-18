@@ -264,6 +264,14 @@ public class GameManager : MonoBehaviour
         inDialogue = false;
     }
 
+    public void EndDiagStory()
+    {
+        Player_Controller.instance.playerHasControl = false;
+        storyDialogue.gameObject.SetActive(false);
+        inDialogue = false;
+        inStory = false; // Reset the inStory flag
+    }
+
     public void OpenStory(int index)
     {
         inTrigger = true;
