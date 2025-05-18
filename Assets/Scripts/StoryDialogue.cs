@@ -33,6 +33,7 @@ public class StoryDialogue : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GameManager.instance.storyDialogue = this;
         StartStory(0);
     }
 
@@ -50,6 +51,8 @@ public class StoryDialogue : MonoBehaviour
     private void StartStory(int index)
     {
         DeleteButtons();
+        Player_Controller.instance.playerHasControl = false;
+        GameManager.instance.inStory = true;
         story = new Story (stories[index].text);
         if (OnCreateStory != null)
         {
@@ -72,7 +75,8 @@ public class StoryDialogue : MonoBehaviour
         }
         else if (!story.canContinue && story.currentChoices.Count <= 0)
         {
-            GameManager.instance.EndStory();
+            GameManager.instance.inStory = false;
+            GameManager.instance.EndDiagStory();
         }
         if (story.currentChoices.Count > 0)
         {
