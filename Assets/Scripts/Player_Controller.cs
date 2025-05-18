@@ -16,6 +16,7 @@ public class Player_Controller : MonoBehaviour
     [Header("Components")]
     public Rigidbody2D rb;
     public BoxCollider2D boxCollider;
+    public CircleCollider2D circleCollider;
     public Transform groundCheck;
     public Animator animator;
 
@@ -33,6 +34,7 @@ public class Player_Controller : MonoBehaviour
     public float dashTime;
     public float inputHoldTime;
     public float wallJumpTime;
+    public float dropdownTime;
 
     [Header("Air Friction Multiplier")]
     public float airFriction;
@@ -73,7 +75,6 @@ public class Player_Controller : MonoBehaviour
     private bool moveDown;
     private bool facingRight;
 
-
     private InputAction moveAction;
     private InputAction jumpAction;
     private InputAction dashAction;
@@ -111,6 +112,7 @@ public class Player_Controller : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+        circleCollider = GetComponent<CircleCollider2D>();
 
         // Get reference for player inputs
         moveAction = InputSystem.actions.FindAction("Move");
@@ -118,7 +120,7 @@ public class Player_Controller : MonoBehaviour
         dashAction = InputSystem.actions.FindAction("Dash");
 
         normalGravity = rb.gravityScale;
-
+        
         dashCooldown = new Cooldown(2f);
         jumpHold = new HoldInput(inputHoldTime);
     }
@@ -126,12 +128,12 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         // Track player velocity in Inspector
         playerVelocity = rb.linearVelocity;
         // Store old velocity
         lastVelocity = rb.linearVelocity;
         animator.SetFloat("Velocity_Y", rb.linearVelocityY);
-
 
         if (isDashing || !playerHasControl || !walkUnlocked)
         {
@@ -141,7 +143,6 @@ public class Player_Controller : MonoBehaviour
                 rb.linearVelocityX = Mathf.SmoothDamp(rb.linearVelocityX, 0, ref dashDecel.x, dashTime);
                 rb.linearVelocityY = Mathf.SmoothDamp(rb.linearVelocityY, 0, ref dashDecel.y, dashTime);
             }
-            return;
         }
 
         if (DEBUG)
@@ -246,14 +247,14 @@ public class Player_Controller : MonoBehaviour
             {
                 if (col.transform.CompareTag("Platform"))
                 {
-                    StartCoroutine(DisablePlayerCollider(0.5f));
-                    rb.AddRelativeForceY(moveDirection.y * 5, ForceMode2D.Impulse);
+                    StartCoroutine(DisablePlayerCollider(dropdownTime));
+                    rb.AddRelativeForceY(moveDirection.y, ForceMode2D.Impulse);
                 }
             }
         }
 
         // Dash
-        if (dash && moveDirection != Vector2.zero) StartCoroutine(Dash());
+        if (dash && moveDirection != Vector2.zero) StartCoroutine(DashSequenceStart());
 
         // Jump
         if (jump || playerWantsToJump) Jump();
@@ -295,16 +296,19 @@ public class Player_Controller : MonoBehaviour
             return;
         }
 
+        if(isOnWall)
+        {
+            animator.Play("WallSlide");
+            return;
+        }
+
         if (playerVelocity == Vector2.zero && grounded)
         {
             animator.Play("Idle");
-            Debug.Log("Idle Animation");
-
         }
         if (moveDirection.x != 0 && grounded)
         {
             animator.Play("Walk");
-            Debug.Log("Walk Animation");
         }
         if(isJumping)
         {
@@ -312,22 +316,45 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
-    private IEnumerator Dash()
+    private IEnumerator DashSequenceStart()
     {
         animator.Play("Dash_Start");
         isDashing = true;
         rb.gravityScale = 0;
         rb.linearVelocity = Vector2.zero;
-        rb.AddRelativeForce(moveDirection * dashSpeed, ForceMode2D.Impulse);
         dashCooldown.StartCooldown();
         yield return new WaitForSeconds(dashTime);
         animator.Play("Dash_End");
+    }
+
+    public void DashSequenceMove()
+    {
+        boxCollider.enabled = false;
+        circleCollider.enabled = true;
+        // Rotate player to face the moving direction
+        Vector2 v = moveDirection;
+        if (Mathf.Abs(v.y) > 0.1)
+        {
+            var angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+        rb.AddForce(moveDirection * dashSpeed, ForceMode2D.Impulse);
 
     }
 
-    public void DashFinished()
+    public void DashSequenceEnd()
     {
+        boxCollider.enabled = true;
+        circleCollider.enabled = false; 
         isDashing = false;
+        if (rb.linearVelocityX < -0.01)
+        {
+            transform.eulerAngles = new Vector3(0, 180, 0);
+        } else
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+
         rb.gravityScale = normalGravity;
     }
 
@@ -384,7 +411,6 @@ public class Player_Controller : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Landing");
         if (collision == null) return;
         else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
@@ -396,9 +422,9 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
+
     public void PreserveMomentumOnLanding()
     {
-        Debug.Log("Movement preserved");
         rb.linearVelocityX = lastVelocity.x;
     }
 
