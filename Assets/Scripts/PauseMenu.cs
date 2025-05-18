@@ -18,29 +18,12 @@ public class PauseMenu : MonoBehaviour
     {
         player = Player_Controller.instance.gameObject;
         gameManager = GameManager.instance;
-        if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
-        {
-            loadButton.interactable = true;
-        }
-        else
-        {
-            loadButton.interactable = false;
-        }
+
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.instance.paused)
-        {
-            if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
-            {
-                loadButton.interactable = true;
-            }
-            else
-            {
-                loadButton.interactable = false;
-            }
-        }
+
     }
 
     public void Continue()
@@ -94,15 +77,4 @@ public class PauseMenu : MonoBehaviour
         deathPanel.SetActive(state);
     }
 
-    public void SaveGame()
-    {
-        SoundManager.PlaySound("menuSelect");
-        SaveAndLoad.instance.Save();
-    }
-
-    public void LoadGame()
-    {
-        SoundManager.PlaySound("menuSelect");
-        SaveAndLoad.instance.Load();
-    }
 }

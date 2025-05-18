@@ -2444,7 +2444,7 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 1227867135}
   - {fileID: 1117627857}
-  dialogueIndex: 4
+  dialogueIndex: 3
 --- !u!4 &726502047
 Transform:
   m_ObjectHideFlags: 0
@@ -6841,7 +6841,7 @@ MonoBehaviour:
   triggerBox2D: {fileID: 3672326114930717954}
   textBox: {fileID: 1833842875237306123}
   VFX: {fileID: 8957707040678585341, guid: 3fd73b44c5134d24a9917325add0aa88, type: 3}
-  dialogueIndex: 0
+  dialogueIndex: 4
   playerInTrigger: 0
   dialogueStarted: 0
 --- !u!222 &482271181351730549

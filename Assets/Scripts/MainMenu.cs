@@ -19,14 +19,7 @@ public class MainMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
-        {
-            continueButton.interactable = true;
-        }
-        else
-        {
-            continueButton.interactable = false;
-        }
+
     }
 
     // Update is called once per frame
@@ -54,10 +47,7 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadSceneAsync(1);
         Destroy(gameObject);
     }
-    public void LoadGame()
-    {
-        SaveAndLoad.instance.Load();
-    }
+
     public void OpenOptions()
     {
         SoundManager.PlaySound("menuHover");

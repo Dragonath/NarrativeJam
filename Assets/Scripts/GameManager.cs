@@ -38,8 +38,11 @@ public class GameManager : MonoBehaviour
     private int currentStoryIndex = 0; // Index of the current story being played
     private bool inTrigger = false; // Flag to check if the player is in a trigger area
 
-    readonly float inputCD = 0.25f;
+    readonly float inputCD = 0.5f;
     bool inputReady = true;
+
+    public bool noEarlyUnlocks = false;
+    public bool loadStarted = false;
 
     void Awake()
     {
@@ -110,14 +113,14 @@ public class GameManager : MonoBehaviour
             {
                 inputReady = false;
                 StartCoroutine(InputCooldown());
-
                 // Dialogue
                 if (inTrigger && !inDialogue)
                 {
+                    Player_Controller.instance.playerHasControl = false;
                     inTrigger = false; // Reset the trigger flag
                     BeginStory(currentStoryIndex); // Start the story with the current index
                 }
-                else if (inDialogue && !dialogue.choiceGiven)
+                else if (inDialogue && !dialogue.choiceGiven && !inTrigger)
                 {
                     if (!dialogue.isTyping)
                     {
@@ -254,7 +257,11 @@ public class GameManager : MonoBehaviour
     {
         Player_Controller.instance.playerHasControl = false; // Disable player input
         inDialogue = true;
-        StartCoroutine(WaitForLoad(dialogueIndex));
+        if (!loadStarted) 
+        {
+            loadStarted = true; // Prevent multiple calls to BeginStory
+            StartCoroutine(WaitForLoad(dialogueIndex));
+        }
     }
 
     public void EndStory()
@@ -293,6 +300,7 @@ public class GameManager : MonoBehaviour
     IEnumerator WaitForLoad(int index)
     {
         yield return new WaitForSeconds(0.5f);
+        loadStarted = false; // Reset the loadStarted flag
         dialogueMenu.SetActive(true);
         dialogue.StartStory(index);
     }

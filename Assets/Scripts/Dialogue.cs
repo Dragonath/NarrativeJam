@@ -29,6 +29,7 @@ public class Dialogue : MonoBehaviour
     public static event Action<Story> OnCreateStory;
 
     public bool choiceGiven = false;
+    private int currentIndex = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -55,6 +56,7 @@ public class Dialogue : MonoBehaviour
         {
             OnCreateStory(story);
         }
+        currentIndex = index;
         PlayStory();
     }
 
@@ -74,6 +76,18 @@ public class Dialogue : MonoBehaviour
         else if (!story.canContinue && story.currentChoices.Count <= 0)
         {
             GameManager.instance.EndStory();
+            if (currentIndex == 1)
+            {
+                GameManager.instance.noEarlyUnlocks = true;
+            }
+            if (currentIndex == 2)
+            {
+                GameManager.instance.noEarlyUnlocks = false;
+            }
+            if (currentIndex == 3)
+            {
+                GameManager.instance.noEarlyUnlocks = true;
+            }
         }
         if (story.currentChoices.Count > 0)
         {
