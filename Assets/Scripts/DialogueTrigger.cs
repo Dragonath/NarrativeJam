@@ -56,7 +56,7 @@ public class DialogueTrigger : MonoBehaviour
 
     IEnumerator WaitLoading()
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.4f);
         dialogueStarted = true;
     }
 }
