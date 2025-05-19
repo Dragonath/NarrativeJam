@@ -32,6 +32,7 @@ public class DialogueTrigger : MonoBehaviour
             Instantiate(VFX, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

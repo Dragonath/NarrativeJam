@@ -153,4 +153,9 @@ public class SaveAndLoad : MonoBehaviour
         yield return new WaitForSeconds(updateCDTime);
         updateCD = false;
     }
+
+    public void RespawnPlayer()
+    {
+        Player_Controller.instance.currentHealth = _playerMaxHealth;
+    }
 }
