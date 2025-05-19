@@ -5,7 +5,7 @@ public class JumpTrigger : MonoBehaviour
 {
     private void OnDestroy()
     {
-        if (SaveAndLoad.instance != null && !GameManager.instance.inDialogue && GameManager.instance.noEarlyUnlocks)
+        if (SaveAndLoad.instance != null && !GameManager.instance.inDialogue && GameManager.instance.noEarlyUnlocks && SaveAndLoad.instance._lvl1Flag < 1)
         {
             SoundManager.PlaySound("pickupSFX");
             SaveAndLoad.instance._jumpUnlocked = true;

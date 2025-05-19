@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class DashTrigger : MonoBehaviour
 {
+
+
     private void OnDestroy()
     {
-        if (SaveAndLoad.instance != null && !GameManager.instance.inDialogue && GameManager.instance.noEarlyUnlocks)
+        if (SaveAndLoad.instance != null && !GameManager.instance.inDialogue && GameManager.instance.noEarlyUnlocks && SaveAndLoad.instance._lvl2Flag < 1)
         {
             SoundManager.PlaySound("pickupSFX");
             SaveAndLoad.instance._dashUnlocked = true;

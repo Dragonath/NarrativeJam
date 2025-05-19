@@ -112,7 +112,6 @@ public class Dialogue : MonoBehaviour
         {
             buttonGroup.alpha += Time.deltaTime / 1.5f;
             yield return null;
-            Debug.Log("Fading in");
         }
     }
 

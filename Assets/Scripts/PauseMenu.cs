@@ -32,7 +32,7 @@ public class PauseMenu : MonoBehaviour
         gameManager.paused = false;
         pausePanel.SetActive(false);
         Time.timeScale = 1;
-
+        Player_Controller.instance.playerHasControl = true;
     }
 
     public void OpenOptions()
@@ -69,7 +69,11 @@ public class PauseMenu : MonoBehaviour
         gameManager.paused = false;
         exitPanel.SetActive(false);
         deathPanel.SetActive(false);
-        Application.Quit();
+        Destroy(Player_Controller.instance.gameObject);
+        Destroy(GameManager.instance.gameObject);
+        Destroy(SaveAndLoad.instance.gameObject);
+        Destroy(SoundManager.instance.gameObject);
+        SceneManager.LoadScene(0);
     }
 
     public void ToggleDeathPanel(bool state)
@@ -77,4 +81,22 @@ public class PauseMenu : MonoBehaviour
         deathPanel.SetActive(state);
     }
 
+    public void ContinueDeath()
+    {
+        SoundManager.PlaySound("menuSelect");
+        gameManager.paused = false;
+        deathPanel.SetActive(false);
+        SaveAndLoad.instance.RespawnPlayer();
+        Time.timeScale = 1;
+        Player_Controller.instance.playerHasControl = true;
+        GameManager.instance.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void TestDeath()
+    {
+        SoundManager.PlaySound("menuSelect");
+        Time.timeScale = 1;
+        GameManager.instance.Fade();
+        Player_Controller.instance.currentHealth = 0;
+    }
 }

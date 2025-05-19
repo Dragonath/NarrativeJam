@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviour
     public bool noEarlyUnlocks = false;
     public bool loadStarted = false;
 
+    public bool continueGame = false; // Flag to check if the player wants to continue the game
+
     void Awake()
     {
         // Check if an instance of GameManager already exists
@@ -78,7 +80,7 @@ public class GameManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        StartCoroutine(SceneFadeOut());
+        StartCoroutine(WaitForFade());
     }
 
     // Update is called once per frame
@@ -209,8 +211,10 @@ public class GameManager : MonoBehaviour
     }
     public void LoadScene(int index)
     {
-        StartCoroutine(SceneFadeIn());
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        while (sceneTransition.alpha < 1)
+        {
+            sceneTransition.alpha += Time.deltaTime * 2;
+        }
         SceneManager.LoadSceneAsync(index);
     }
 
@@ -226,6 +230,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FadeIn()
     {
+        Debug.Log("death Fading in");
         while (deathCanvas.alpha < 1)
         {
             deathCanvas.alpha += Time.deltaTime;
@@ -304,4 +309,10 @@ public class GameManager : MonoBehaviour
         dialogueMenu.SetActive(true);
         dialogue.StartStory(index);
     }
+    IEnumerator WaitForFade()
+    {
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(SceneFadeOut());
+    }
+
 }
