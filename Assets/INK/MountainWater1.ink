@@ -1,4 +1,4 @@
-You collect the water droplet and gain the ability to double jump!
-The destination is closer than ever before.
-Keep going!
+You collect the water droplet.
+Flower is getting much stronger and is ready to bloom.
+You gain the ability to double jump!
 -> END
