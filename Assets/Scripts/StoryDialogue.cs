@@ -16,6 +16,11 @@ public class StoryDialogue : MonoBehaviour
     public float typingSpeed = 0.05f;
 
     private Story story;
+    private Player_Controller pc;
+    private bool going
+    {
+        set; get; 
+    }
 
     public List<TextAsset> stories;
 
@@ -34,6 +39,7 @@ public class StoryDialogue : MonoBehaviour
     void Start()
     {
         GameManager.instance.storyDialogue = this;
+        pc = Player_Controller.instance;
         StartStory(0);
     }
 
@@ -153,6 +159,10 @@ public class StoryDialogue : MonoBehaviour
         }
         isTyping = false;
         skip = false;
+    }
+
+    public void EndIntro()
+    {
     }
 
 }

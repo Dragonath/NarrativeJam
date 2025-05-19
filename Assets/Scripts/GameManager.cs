@@ -271,6 +271,7 @@ public class GameManager : MonoBehaviour
 
     public void EndStory()
     {
+        Debug.Log("Story ended");
         Player_Controller.instance.playerHasControl = true; // Enable player input
         dialogueMenu.SetActive(false);
         inDialogue = false;
@@ -282,6 +283,7 @@ public class GameManager : MonoBehaviour
         storyDialogue.gameObject.SetActive(false);
         inDialogue = false;
         inStory = false; // Reset the inStory flag
+        IntroLogic.Instance.StartIntroAnimation();
     }
 
     public void OpenStory(int index)

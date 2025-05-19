@@ -19,6 +19,9 @@ public class Player_Controller : MonoBehaviour
     public CircleCollider2D circleCollider;
     public Transform groundCheck;
     public Animator animator;
+    public RuntimeAnimatorController controller1;
+    public RuntimeAnimatorController controller2;
+
 
     [Header("Speeds")]
     // Track player velocity
@@ -74,6 +77,7 @@ public class Player_Controller : MonoBehaviour
     private bool dash;
     private bool moveDown;
     private bool facingRight;
+    
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -143,11 +147,12 @@ public class Player_Controller : MonoBehaviour
                 rb.linearVelocityX = Mathf.SmoothDamp(rb.linearVelocityX, 0, ref dashDecel.x, dashTime);
                 rb.linearVelocityY = Mathf.SmoothDamp(rb.linearVelocityY, 0, ref dashDecel.y, dashTime);
             }
+            
         }
 
         if (DEBUG)
         {
-
+           
         }
 
         // Player input is checked 
@@ -299,6 +304,7 @@ public class Player_Controller : MonoBehaviour
         if(isOnWall)
         {
             animator.Play("WallSlide");
+
             return;
         }
 
@@ -433,6 +439,11 @@ public class Player_Controller : MonoBehaviour
         int direction = (facingRight) ? 1 : -1;
         Debug.DrawRay(transform.position, Vector2.right * direction * wallCheckRadius, Color.red);
         Gizmos.DrawWireCube(groundCheck.position, boxSize);
+    }
+
+    public void ToggleAnimator()
+    {
+        animator.runtimeAnimatorController = controller2;
     }
 
 }

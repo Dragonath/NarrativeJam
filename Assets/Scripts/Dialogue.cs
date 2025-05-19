@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class Dialogue : MonoBehaviour
 {
@@ -63,7 +64,6 @@ public class Dialogue : MonoBehaviour
     public void PlayStory()
     {
         DeleteButtons();
-
         if(story.canContinue)
         {
             // Continue gets the next line of the story
