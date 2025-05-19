@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 585c0777a13dae040aa8fd476e81465b
+guid: ce9a708237e59504fb6ffddfda76188d
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -49,7 +49,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -63,7 +63,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -247,7 +247,12 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      player2_walk2_0: -6171145777063068769
+      player2_walk2_1: 6949172189844066098
+      player2_walk2_2: 360746802527525218
+      player2_walk2_3: -6033265203495018464
+      player2_walk2_4: -6439044345261032427
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

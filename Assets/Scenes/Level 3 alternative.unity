@@ -1099,7 +1099,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0
+      value: 0.055555556
       objectReference: {fileID: 0}
     - target: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
@@ -1107,7 +1107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.8888889
       objectReference: {fileID: 0}
     - target: {fileID: 3126500899752577630, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: target
@@ -1173,6 +1173,11 @@ PrefabInstance:
 --- !u!1 &639842945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 85473677396504518, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
+  m_PrefabInstance: {fileID: 639842944}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &639842951 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
   m_PrefabInstance: {fileID: 639842944}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &738805410
@@ -1340,6 +1345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e0c444d426f15498a25173db7f226a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 639842951}
   spawnPoints:
   - {fileID: 885983940}
   - {fileID: 585656963}
@@ -1497,6 +1503,14 @@ PrefabInstance:
       value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
+      propertyPath: controller1
+      value: 
+      objectReference: {fileID: 9100000, guid: 08f52acefcbe6604a953f5e54e2ee420, type: 2}
+    - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
+      propertyPath: controller2
+      value: 
+      objectReference: {fileID: 9100000, guid: 7af61700f3c095d4aad39bd92ed0ea53, type: 2}
+    - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
       propertyPath: playerSpeed
       value: 7
       objectReference: {fileID: 0}
@@ -1508,13 +1522,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7642683187360721432, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 08f52acefcbe6604a953f5e54e2ee420, type: 2}
     - target: {fileID: 7856122199337316976, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -38.6
       objectReference: {fileID: 0}
     - target: {fileID: 7856122199337316976, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 17.7
       objectReference: {fileID: 0}
     - target: {fileID: 7856122199337316976, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2620,6 +2638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2965a28f71546b444b11ec320858463f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smokePrefab: {fileID: 8757559477013124376, guid: 5b087a9648b65da45acf704a39c11dc3, type: 3}
 --- !u!1 &2049749936
 GameObject:
   m_ObjectHideFlags: 0
