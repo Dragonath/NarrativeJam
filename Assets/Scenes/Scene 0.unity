@@ -276,21 +276,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
-      propertyPath: runUnlocked
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: controller1
+      value: 
+      objectReference: {fileID: 9100000, guid: 08f52acefcbe6604a953f5e54e2ee420, type: 2}
     - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
-      propertyPath: dashUnlocked
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
-      propertyPath: jumpUnlocked
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 457728839589209139, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
-      propertyPath: walkUnlocked
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: controller2
+      value: 
+      objectReference: {fileID: 9100000, guid: 7af61700f3c095d4aad39bd92ed0ea53, type: 2}
     - target: {fileID: 1705551973750708276, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
       propertyPath: m_Name
       value: Player
@@ -334,10 +326,6 @@ PrefabInstance:
     - target: {fileID: 7856122199337316976, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8057494995023221748, guid: cdc6e811a4a5ea4499b07f80babc5e0c, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

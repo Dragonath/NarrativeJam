@@ -137,7 +137,6 @@ public class Player_Controller : MonoBehaviour
         playerVelocity = rb.linearVelocity;
         // Store old velocity
         lastVelocity = rb.linearVelocity;
-        animator.SetFloat("Velocity_Y", rb.linearVelocityY);
 
         if (isDashing || !playerHasControl || !walkUnlocked)
         {
@@ -441,11 +440,16 @@ public class Player_Controller : MonoBehaviour
         Gizmos.DrawWireCube(groundCheck.position, boxSize);
     }
 
-    public void ToggleAnimator()
+    public IEnumerator ToggleAnimator(float time)
     {
+        yield return new WaitForSeconds(time);
         animator.runtimeAnimatorController = controller2;
     }
 
+    public void StartAnimatorChange()
+    {
+        StartCoroutine(ToggleAnimator(0.2f));
+    }
 }
 
 public class Cooldown

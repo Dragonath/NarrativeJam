@@ -522,7 +522,23 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      player2_dash_0: 8300293399293934862
+      player2_dash_1: -1135393843390992824
+      player2_dash_10: -6241550996557404400
+      player2_dash_11: 8690802872639308300
+      player2_dash_12: 2952619264658088528
+      player2_dash_13: -6821522047563301868
+      player2_dash_14: -1216148242793892
+      player2_dash_15: -9081128319611294327
+      player2_dash_2: -1303888709363475860
+      player2_dash_3: -2751350114121673771
+      player2_dash_4: -1139576555741582779
+      player2_dash_5: 4441322145997815107
+      player2_dash_6: 8603526897238743787
+      player2_dash_7: -464617964400888413
+      player2_dash_8: -3828556803316019940
+      player2_dash_9: 6110545965185796255
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -2315,7 +2315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
-  knockbackForce: 1
+  knockbackForce: 5
   cooldownTime: 0.5
 --- !u!1 &288023105
 GameObject:
@@ -2725,6 +2725,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
+--- !u!20 &421534006 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
+  m_PrefabInstance: {fileID: 421534005}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &571035326
 GameObject:
   m_ObjectHideFlags: 0
@@ -3131,6 +3136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e0c444d426f15498a25173db7f226a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 421534006}
   spawnPoints:
   - {fileID: 1227867135}
   - {fileID: 1117627857}
