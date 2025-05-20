@@ -62,12 +62,12 @@ MonoBehaviour:
   moveSpeed: 5
   jumpSpeed: 23
   dashSpeed: 30
-  wallSlidingSpeed: 0.3
+  wallSlidingSpeed: 0.2
   dashTime: 0.3
   inputHoldTime: 0.25
   wallJumpTime: 0.3
   dropdownTime: 0.2
-  airFriction: 0.05
+  airFriction: 0.15
   maxHealth: 3
   currentHealth: 3
   maxJumps: 2
