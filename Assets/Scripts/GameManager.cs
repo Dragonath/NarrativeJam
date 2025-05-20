@@ -324,4 +324,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SceneFadeOut());
     }
 
+    public void PlayerDeath()
+    {
+        Time.timeScale = 1;
+        Fade();
+        pauseCanvas.alpha = 1;
+    }
+
 }
