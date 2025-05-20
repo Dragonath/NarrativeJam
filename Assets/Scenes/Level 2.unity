@@ -1815,16 +1815,6 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -15, y: 2, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 44
-      m_TileSpriteIndex: 44
-      m_TileMatrixIndex: 1
-      m_TileColorIndex: 2
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
   - first: {x: 17, y: 2, z: 0}
     second:
       serializedVersion: 2
@@ -2105,7 +2095,7 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 7
     m_Data: {fileID: 11400000, guid: 859234824d61c00479e1b0dbf27fbb22, type: 2}
-  - m_RefCount: 64
+  - m_RefCount: 63
     m_Data: {fileID: 11400000, guid: e7c17675b853b2546b888683b94df1ee, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 0
@@ -2196,7 +2186,7 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 7
     m_Data: {fileID: 1790694222, guid: 94c4d7c64eb4b7448ac65f322236c826, type: 3}
-  - m_RefCount: 64
+  - m_RefCount: 63
     m_Data: {fileID: -1379368008, guid: 94c4d7c64eb4b7448ac65f322236c826, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 60
@@ -2217,7 +2207,7 @@ Tilemap:
       e31: 0
       e32: 0
       e33: 1
-  - m_RefCount: 3
+  - m_RefCount: 2
     m_Data:
       e00: -1
       e01: 0
@@ -2276,7 +2266,7 @@ Tilemap:
     m_Data: {r: 6.9364e-41, g: 6.9364e-41, b: 6.9364e-41, a: 6.9364e-41}
   - m_RefCount: 0
     m_Data: {r: 6.9364e-41, g: 6.9364e-41, b: 6.9364e-41, a: 6.9364e-41}
-  - m_RefCount: 71
+  - m_RefCount: 70
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -3257,99 +3247,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &758733727
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 758733729}
-  - component: {fileID: 758733728}
-  m_Layer: 0
-  m_Name: EnemyPurpleLight (15)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &758733728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 758733727}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ComponentVersion: 2
-  m_LightType: 1
-  m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.4
-  m_Color: {r: 1, g: 0.0047169924, b: 0.84768194, a: 0.2901961}
-  m_Intensity: 3
-  m_LightVolumeIntensity: 1
-  m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: ff87b29400000000cfada694
-  m_LightCookieSprite: {fileID: 0}
-  m_DeprecatedPointLightCookieSprite: {fileID: 0}
-  m_LightOrder: 0
-  m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 0
-  m_NormalMapDistance: 3
-  m_NormalMapQuality: 2
-  m_UseNormalMap: 0
-  m_ShadowsEnabled: 1
-  m_ShadowIntensity: 0.75
-  m_ShadowSoftness: 0.3
-  m_ShadowSoftnessFalloffIntensity: 0.5
-  m_ShadowVolumeIntensityEnabled: 0
-  m_ShadowVolumeIntensity: 0.75
-  m_LocalBounds:
-    m_Center: {x: -0.03729999, y: -0.002700001, z: 0}
-    m_Extent: {x: 0.911, y: 0.98090005, z: 0}
-  m_PointLightInnerAngle: 360
-  m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 1
-  m_ShapeLightParametricSides: 5
-  m_ShapeLightParametricAngleOffset: 0
-  m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
-  m_ShapeLightFalloffOffset: {x: 0, y: 0}
-  m_ShapePath:
-  - {x: -0.11442566, y: -0.37790012, z: 0}
-  - {x: 0.12282562, y: -0.34058046, z: 0}
-  - {x: 0.3136406, y: -0.34255648, z: 0}
-  - {x: 0.30918503, y: 0.21850538, z: 0}
-  - {x: 0.37344742, y: 0.21529245, z: 0}
-  - {x: 0.36702347, y: 0.40808058, z: 0}
-  - {x: 0.26099014, y: 0.4112935, z: 0}
-  - {x: 0.1260376, y: 0.26670265, z: 0}
-  - {x: 0.005176544, y: 0.32006407, z: 0}
-  - {x: -0.23704529, y: 0.47876978, z: 0}
-  - {x: -0.44858932, y: 0.2782936, z: 0}
-  - {x: -0.37521362, y: -0.34058046, z: 0}
-  - {x: -0.13101196, y: -0.48517132, z: 0}
---- !u!4 &758733729
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 758733727}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -14.566, y: 2.465, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
 --- !u!1 &794738445
 GameObject:
   m_ObjectHideFlags: 0
@@ -106433,7 +106330,6 @@ SceneRoots:
   - {fileID: 1640773309}
   - {fileID: 11260392}
   - {fileID: 288023107}
-  - {fileID: 758733729}
   - {fileID: 66129864}
   - {fileID: 1717367112}
   - {fileID: 634933389}
