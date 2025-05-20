@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using static UnityEngine.Timeline.DirectorControlPlayable;
 
 public class GameManager : MonoBehaviour
 {
