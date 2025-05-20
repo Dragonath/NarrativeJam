@@ -42,7 +42,6 @@ public class MainMenu : MonoBehaviour
     {
         //Delete the save file and set default values
         File.Delete(Application.persistentDataPath + "/playerInfo.dat");
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(1);
         Destroy(gameObject);
     }
