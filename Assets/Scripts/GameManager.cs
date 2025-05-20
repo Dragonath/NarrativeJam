@@ -326,6 +326,7 @@ public class GameManager : MonoBehaviour
     public void PlayerDeath()
     {
         Time.timeScale = 1;
+        SoundManager.PlaySound("death");
         Fade();
         pauseCanvas.alpha = 1;
     }

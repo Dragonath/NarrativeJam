@@ -442,18 +442,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2926676648652462531, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ExitGame
-      objectReference: {fileID: 0}
-    - target: {fileID: 3293920424901876034, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ContinueDeath
-      objectReference: {fileID: 0}
-    - target: {fileID: 4464550009543734291, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: storyDialogue
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -860,15 +848,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.0556213
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 126235081262667394, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.8893491
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3126500899752577630, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_Enabled
