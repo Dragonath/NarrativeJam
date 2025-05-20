@@ -80,7 +80,14 @@ public class GameManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        StartCoroutine(WaitForFade());
+        if(GameManager.instance != null)
+        {
+            StartCoroutine(WaitForFade());
+        }
+        else
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded; // Unsubscribe from the event to avoid memory leaks
+        }
     }
 
     // Update is called once per frame

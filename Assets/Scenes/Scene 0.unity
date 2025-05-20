@@ -442,9 +442,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4464550009543734291, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
-      propertyPath: storyDialogue
-      value: 
+    - target: {fileID: 4873931613048176696, guid: ac904ec29bcfdd448bd8d6d5586ca997, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -865,6 +865,10 @@ PrefabInstance:
     - target: {fileID: 3126500899752577630, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5304312857812405132, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
+      propertyPath: m_CropFrame
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5394040055391941938, guid: 0c72d7d709affcb488f03bb7f393cbfb, type: 3}
       propertyPath: m_LocalPosition.x
