@@ -77,7 +77,7 @@ public class Player_Controller : MonoBehaviour
     private bool dash;
     private bool moveDown;
     private bool facingRight;
-    
+
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -124,7 +124,7 @@ public class Player_Controller : MonoBehaviour
         dashAction = InputSystem.actions.FindAction("Dash");
 
         normalGravity = rb.gravityScale;
-        
+
         dashCooldown = new Cooldown(2f);
         jumpHold = new HoldInput(inputHoldTime);
     }
@@ -140,18 +140,18 @@ public class Player_Controller : MonoBehaviour
 
         if (isDashing || !playerHasControl || !walkUnlocked)
         {
-            if(isDashing)
+            if (isDashing)
             {
                 // Damp player speed during a dash.
                 rb.linearVelocityX = Mathf.SmoothDamp(rb.linearVelocityX, 0, ref dashDecel.x, dashTime);
                 rb.linearVelocityY = Mathf.SmoothDamp(rb.linearVelocityY, 0, ref dashDecel.y, dashTime);
             }
-            
+
         }
 
         if (DEBUG)
         {
-           
+
         }
 
         // Player input is checked 
@@ -274,6 +274,12 @@ public class Player_Controller : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right * direction, wallCheckRadius, groundLayer);
         Debug.DrawRay(transform.position, Vector2.right * direction * wallCheckRadius, Color.red);
 
+        // Fix normal's float precision errors 
+        if (Mathf.Abs(hit.normal.x) > 0.988888)
+        {
+            hit.normal = new Vector2(Mathf.Round(hit.normal.x), hit.normal.y);
+        }
+
         if (hit.normal.x == -direction && !grounded && moveDirection.x == direction)
         {
             // wall slide
@@ -291,16 +297,22 @@ public class Player_Controller : MonoBehaviour
                 isOnWall = false;
             }
         }
+
+        if (hit != false)
+        {
+            Debug.Log("Hit Normal: " + hit.normal.x + "\nDirection: " + -direction + "\nMove Direction: " + moveDirection.x);
+        }
+
     }
 
     private void SetAnimation()
     {
-        if(isDashing)
+        if (isDashing)
         {
             return;
         }
 
-        if(isOnWall)
+        if (isOnWall)
         {
             animator.Play("WallSlide");
 
@@ -315,7 +327,7 @@ public class Player_Controller : MonoBehaviour
         {
             animator.Play("Walk");
         }
-        if(isJumping)
+        if (isJumping)
         {
             animator.Play("Jump");
         }
@@ -350,7 +362,7 @@ public class Player_Controller : MonoBehaviour
     public void DashSequenceEnd()
     {
         boxCollider.enabled = true;
-        circleCollider.enabled = false; 
+        circleCollider.enabled = false;
         isDashing = false;
         if (rb.linearVelocityX < -0.01)
         {
@@ -414,6 +426,16 @@ public class Player_Controller : MonoBehaviour
         rb.AddRelativeForceY(knockback, ForceMode2D.Impulse);
     }
 
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        StartCoroutine(FlashRed());
+        if (currentHealth <= 0)
+        {
+            GameManager.instance.PlayerDeath();
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision == null) return;
@@ -427,6 +449,12 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
+    IEnumerator FlashRed()
+    {
+        GetComponent<SpriteRenderer>().color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        GetComponent<SpriteRenderer>().color = Color.white;
+    }
 
     public void PreserveMomentumOnLanding()
     {
@@ -450,6 +478,8 @@ public class Player_Controller : MonoBehaviour
     {
         StartCoroutine(ToggleAnimator(0.2f));
     }
+
+
 }
 
 public class Cooldown

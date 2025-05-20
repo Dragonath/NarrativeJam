@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class Hazards : MonoBehaviour
 {
-    public float damage;
+    public int damage;
     public float knockbackForce;
     public float cooldownTime;
     private TilemapCollider2D _collider;
@@ -26,7 +26,7 @@ public class Hazards : MonoBehaviour
             Debug.Log("Player hit a hazard");
             Player_Controller.instance.Knock(knockbackForce);
             StartCoroutine(Cooldown(cooldownTime));
-            // Damage?
+            Player_Controller.instance.TakeDamage(damage);
         }
     }
     private IEnumerator Cooldown(float time)

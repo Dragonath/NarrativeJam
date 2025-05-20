@@ -2314,8 +2314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4256e3cefc60e444b90077dc05f4fcb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
-  knockbackForce: 5
+  damage: 1
+  knockbackForce: 15
   cooldownTime: 0.5
 --- !u!1 &288023105
 GameObject:

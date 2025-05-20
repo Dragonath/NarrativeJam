@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.IO;
 using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
@@ -53,6 +52,7 @@ public class PauseMenu : MonoBehaviour
     {
         SoundManager.PlaySound("menuHover");
         pausePanel.SetActive(false);
+        deathPanel.SetActive(false);
         exitPanel.SetActive(true);
     }
 
@@ -89,7 +89,7 @@ public class PauseMenu : MonoBehaviour
         SaveAndLoad.instance.RespawnPlayer();
         Time.timeScale = 1;
         Player_Controller.instance.playerHasControl = true;
-        GameManager.instance.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void TestDeath()

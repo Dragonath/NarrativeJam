@@ -42,6 +42,7 @@ public class SaveAndLoad : MonoBehaviour
     public int _lvl1Flag;
     public int _lvl2Flag;
     public int _lvl3Flag;
+    public Checkpoint lastCheckpoint; 
 
 
     void Awake()

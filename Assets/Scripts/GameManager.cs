@@ -317,4 +317,14 @@ public class GameManager : MonoBehaviour
         StartCoroutine(SceneFadeOut());
     }
 
+    public void PlayerDeath()
+    {
+        SoundManager.PlaySound("menuSelect");
+        Time.timeScale = 1;
+        Fade();
+        pauseCanvas.alpha = 1;
+        Player_Controller.instance.currentHealth = 0;
+
+    }
+
 }

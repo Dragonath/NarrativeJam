@@ -12,7 +12,19 @@ public class LevelManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if(SceneManager.GetActiveScene().buildIndex == 2)
+        TriggerLevel();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void TriggerLevel()
+    {
+        if (SceneManager.GetActiveScene().buildIndex == 2)
         {
             Player_Controller.instance.rb.position = spawnPoints[SaveAndLoad.instance._lvl1Flag].transform.position;
             mainCamera.transform.position = new Vector3(Player_Controller.instance.rb.position.x, Player_Controller.instance.rb.position.y, -2);
@@ -43,12 +55,5 @@ public class LevelManager : MonoBehaviour
             }
             return;
         }
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
