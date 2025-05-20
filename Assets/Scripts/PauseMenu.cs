@@ -88,6 +88,7 @@ public class PauseMenu : MonoBehaviour
         gameManager.paused = false;
         deathPanel.SetActive(false);
         SaveAndLoad.instance.RespawnPlayer();
+        GameManager.instance.UpdatePlayerHealthUI();
         Time.timeScale = 1;
         Player_Controller.instance.playerHasControl = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

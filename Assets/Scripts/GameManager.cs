@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     public GameObject exitMenu;
     public GameObject deathMenu;
     public GameObject dialogueMenu;
+    public Image Heart1, Heart2, Heart3;
 
     CanvasGroup deathCanvas; // Reference to the CanvasGroup component for fading effects
     public CanvasGroup pauseCanvas;
@@ -68,6 +70,7 @@ public class GameManager : MonoBehaviour
         pauseCanvas.alpha = 0; // Set the initial alpha value to 0 (invisible)
         sceneTransition.alpha = 1; // Set the initial alpha value to 1 (invisible)
 
+
         // ACTIONS
         interactAction = InputSystem.actions.FindAction("Interact"); 
         menuAction = InputSystem.actions.FindAction("Menu");
@@ -75,6 +78,7 @@ public class GameManager : MonoBehaviour
         dialogue = dialogueMenu.GetComponent<Dialogue>(); // Get the Dialogue component from this GameObject
         SceneManager.sceneLoaded += OnSceneLoaded;
         StartCoroutine(SceneFadeOut());
+        UpdatePlayerHealthUI();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -236,7 +240,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FadeIn()
     {
-        Debug.Log("death Fading in");
         while (deathCanvas.alpha < 1)
         {
             deathCanvas.alpha += Time.deltaTime;
@@ -277,7 +280,6 @@ public class GameManager : MonoBehaviour
 
     public void EndStory()
     {
-        Debug.Log("Story ended");
         Player_Controller.instance.playerHasControl = true; // Enable player input
         dialogueMenu.SetActive(false);
         inDialogue = false;
@@ -306,7 +308,6 @@ public class GameManager : MonoBehaviour
 
     public void DoDamage(int damage)
     {
-        Debug.Log(damage + " Damage taken");
         Player_Controller.instance.currentHealth -= damage;
     }
 
@@ -329,6 +330,34 @@ public class GameManager : MonoBehaviour
         SoundManager.PlaySound("death");
         Fade();
         pauseCanvas.alpha = 1;
+    }
+
+    public void UpdatePlayerHealthUI()
+    {
+        if (Player_Controller.instance.currentHealth == 0)
+        {
+            Heart1.enabled = false;
+            Heart2.enabled = false;
+            Heart3.enabled = false;
+        }
+        if (Player_Controller.instance.currentHealth == 1)
+        {
+            Heart1.enabled = true;
+            Heart2.enabled = false;
+            Heart3.enabled = false;
+        }
+        if(Player_Controller.instance.currentHealth == 2)
+        {
+            Heart1.enabled = true;
+            Heart2.enabled = true;
+            Heart3.enabled = false;
+        }
+        if(Player_Controller.instance.currentHealth == 3)
+        {
+            Heart1.enabled = true;
+            Heart2.enabled = true;
+            Heart3.enabled = true;
+        }
     }
 
 }
