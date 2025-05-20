@@ -78,7 +78,6 @@ MonoBehaviour:
   isOnWall: 1
   isDashing: 0
   isJumping: 0
-  DEBUG: 0
   playerHasControl: 1
   playerWantsToJump: 0
   groundLayer:
@@ -86,6 +85,7 @@ MonoBehaviour:
     m_Bits: 8
   boxSize: {x: 1.03, y: 0.03}
   moveDirection: {x: 0, y: 0}
+  canDash: 0
   dashUnlocked: 0
   runUnlocked: 0
   jumpUnlocked: 0
@@ -206,7 +206,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0.3
   m_AngularDamping: 0.05
-  m_GravityScale: 7
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

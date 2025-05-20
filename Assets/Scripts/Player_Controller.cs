@@ -410,6 +410,7 @@ public class Player_Controller : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        GameManager.instance.UpdatePlayerHealthUI();
         StartCoroutine(FlashRed());
         if (currentHealth <= 0)
         {
