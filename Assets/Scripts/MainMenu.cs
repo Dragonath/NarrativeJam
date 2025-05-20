@@ -12,7 +12,6 @@ public class MainMenu : MonoBehaviour
     public GameObject levelPanel;
     public GameObject optionsPanel;
     public GameObject exitPanel;
-    public GameObject creditsPanel;
 
     public Button continueButton;
 
@@ -58,7 +57,7 @@ public class MainMenu : MonoBehaviour
     {
         SoundManager.PlaySound("menuHover");
         menuPanel.gameObject.SetActive(false);
-        creditsPanel.gameObject.SetActive(true);
+        SceneManager.LoadSceneAsync(5);
     }
     public void CloseOptions()
     {
@@ -66,12 +65,7 @@ public class MainMenu : MonoBehaviour
         menuPanel.gameObject.SetActive(true);
         optionsPanel.gameObject.SetActive(false);
     }
-    public void CloseCredits()
-    {
-        SoundManager.PlaySound("menuHover");
-        menuPanel.gameObject.SetActive(true);
-        creditsPanel.gameObject.SetActive(false);
-    }
+    
     public void QuitGame()
     {
         SoundManager.PlaySound("menuHover");
