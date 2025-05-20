@@ -314,6 +314,7 @@ public class Player_Controller : MonoBehaviour
     private IEnumerator DashSequenceStart()
     {
         animator.Play("Dash_Start");
+        SoundManager.PlaySound("dash");
         isDashing = true;
         rb.gravityScale = 0;
         rb.linearVelocity = Vector2.zero;
@@ -385,6 +386,7 @@ public class Player_Controller : MonoBehaviour
                     rb.AddForceY(jumpSpeed, ForceMode2D.Impulse);
                     break;
             }
+            SoundManager.PlaySound("jump");
             jumpsLeft--;
             jumpHold.StopHold();
         }

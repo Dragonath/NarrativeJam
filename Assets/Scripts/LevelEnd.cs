@@ -33,7 +33,14 @@ public class LevelEnd : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            Destroy(gameObject);
+            if (dialogueStarted == true && !GameManager.instance.inDialogue)
+            {
+                GameManager.instance.LoadScene(nextSceneIndex);
+            }
+            else
+            {
+                dialogueStarted = false;
+            }
         }
     }
 }
