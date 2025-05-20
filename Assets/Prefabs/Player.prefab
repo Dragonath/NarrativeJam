@@ -67,7 +67,7 @@ MonoBehaviour:
   inputHoldTime: 0.25
   wallJumpTime: 0.3
   dropdownTime: 0.2
-  airFriction: 0.15
+  airFriction: 0.05
   maxHealth: 3
   currentHealth: 3
   maxJumps: 2
@@ -206,7 +206,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0.3
   m_AngularDamping: 0.05
-  m_GravityScale: 5
+  m_GravityScale: 7
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
