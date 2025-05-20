@@ -12,7 +12,6 @@ using UnityEngine.InputSystem;
 public class Player_Controller : MonoBehaviour
 {
     // -- PUBLIC -- // 
-
     [Header("Components")]
     public Rigidbody2D rb;
     public BoxCollider2D boxCollider;
@@ -24,7 +23,6 @@ public class Player_Controller : MonoBehaviour
 
 
     [Header("Speeds")]
-    // Track player velocity
     public Vector2 playerVelocity;
 
     public float maxSpeed;
@@ -57,7 +55,6 @@ public class Player_Controller : MonoBehaviour
     public bool isOnWall;
     public bool isDashing;
     public bool isJumping;
-    public bool DEBUG;
     public bool playerHasControl;
     public bool playerWantsToJump;
 
@@ -77,6 +74,7 @@ public class Player_Controller : MonoBehaviour
     private bool dash;
     private bool moveDown;
     private bool facingRight;
+    public bool canDash;
 
 
     private InputAction moveAction;
@@ -85,7 +83,6 @@ public class Player_Controller : MonoBehaviour
 
     private Vector2 dashDecel;
     private Vector2 lastVelocity;
-    private Cooldown dashCooldown;
     private HoldInput jumpHold;
 
     [Header("Unlocks")]
@@ -97,7 +94,6 @@ public class Player_Controller : MonoBehaviour
     public static Player_Controller instance;
     void Awake()
     {
-        // Check if an instance of SoundManager already exists
         if (instance == null)
         {
             instance = this; // Assign this instance to the static instance
@@ -125,7 +121,6 @@ public class Player_Controller : MonoBehaviour
 
         normalGravity = rb.gravityScale;
 
-        dashCooldown = new Cooldown(2f);
         jumpHold = new HoldInput(inputHoldTime);
     }
 
@@ -149,11 +144,6 @@ public class Player_Controller : MonoBehaviour
 
         }
 
-        if (DEBUG)
-        {
-
-        }
-
         // Player input is checked 
         moveDirection = moveAction.ReadValue<Vector2>();
         if (moveDirection.y < -0.2f)
@@ -165,15 +155,16 @@ public class Player_Controller : MonoBehaviour
         grounded = Physics2D.BoxCast
             (groundCheck.position, boxSize, 0, -transform.up, groundCheckRadius, groundLayer);
 
-        // reset jumps if player is on ground
+        // reset jumps and dash if player is on ground
         if (grounded)
         {
             isJumping = false;
             jumpsLeft = maxJumps;
+            canDash = true;
         }
 
         // Check for dash imput and if dash is on cooldown. Player cannot dash while giving no input
-        if (dashAction.WasPressedThisFrame() && dashUnlocked)
+        if (dashAction.WasPressedThisFrame() && dashUnlocked && canDash)
         {
 
             dash = true;
@@ -239,10 +230,9 @@ public class Player_Controller : MonoBehaviour
             rb.linearVelocityX = -maxSpeed;
         }
 
-        // Flip character model
         FlipCharacter();
 
-        // Lets player drop down from a platform -- Not well tested
+        // Lets player drop down from a platform
         if (moveDown)
         {
             RaycastHit2D col = Physics2D.BoxCast
@@ -297,12 +287,6 @@ public class Player_Controller : MonoBehaviour
                 isOnWall = false;
             }
         }
-
-        if (hit != false)
-        {
-            Debug.Log("Hit Normal: " + hit.normal.x + "\nDirection: " + -direction + "\nMove Direction: " + moveDirection.x);
-        }
-
     }
 
     private void SetAnimation()
@@ -339,7 +323,8 @@ public class Player_Controller : MonoBehaviour
         isDashing = true;
         rb.gravityScale = 0;
         rb.linearVelocity = Vector2.zero;
-        dashCooldown.StartCooldown();
+        canDash = false;
+        grounded = false;
         yield return new WaitForSeconds(dashTime);
         animator.Play("Dash_End");
     }
@@ -364,7 +349,7 @@ public class Player_Controller : MonoBehaviour
         boxCollider.enabled = true;
         circleCollider.enabled = false;
         isDashing = false;
-        if (rb.linearVelocityX < -0.01)
+        if (moveDirection.x < -0.01)
         {
             transform.eulerAngles = new Vector3(0, 180, 0);
         } else
@@ -452,7 +437,11 @@ public class Player_Controller : MonoBehaviour
     IEnumerator FlashRed()
     {
         GetComponent<SpriteRenderer>().color = Color.red;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
+        GetComponent<SpriteRenderer>().color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        GetComponent<SpriteRenderer>().color = Color.red;
+        yield return new WaitForSeconds(0.1f);
         GetComponent<SpriteRenderer>().color = Color.white;
     }
 
@@ -478,8 +467,6 @@ public class Player_Controller : MonoBehaviour
     {
         StartCoroutine(ToggleAnimator(0.2f));
     }
-
-
 }
 
 public class Cooldown
