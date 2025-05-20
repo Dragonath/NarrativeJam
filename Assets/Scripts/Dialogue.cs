@@ -1,13 +1,10 @@
-using UnityEditor.Rendering;
 using UnityEngine;
 using System.Collections;   
 using TMPro;
 using Ink.Runtime;
 using UnityEngine.UI;
 using System;
-using UnityEngine.InputSystem;
 using System.Collections.Generic;
-using UnityEditor;
 
 public class Dialogue : MonoBehaviour
 {
